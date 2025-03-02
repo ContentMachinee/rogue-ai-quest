@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useGame } from '@/context/GameContext';
+import { useGame, DecisionType } from '@/context/GameContext';
 import ChallengePanel from '@/components/game/ChallengePanel';
 import ProgressTracker from '@/components/game/ProgressTracker';
 import Commander from '@/components/characters/Commander';
@@ -10,7 +10,7 @@ import TheCore from '@/components/characters/TheCore';
 const challenges = [
   {
     id: 'tech_challenge_1',
-    type: 'technical',
+    type: 'technical' as DecisionType,
     question: "The Core has encrypted the power grid control system. How will you approach breaking through?",
     options: [
       {
@@ -37,7 +37,7 @@ const challenges = [
   },
   {
     id: 'tech_challenge_2',
-    type: 'analytical',
+    type: 'analytical' as DecisionType,
     question: "You've detected a vulnerability in The Core's defense. How do you analyze it?",
     options: [
       {
@@ -64,7 +64,7 @@ const challenges = [
   },
   {
     id: 'tech_challenge_3',
-    type: 'empathetic',
+    type: 'empathetic' as DecisionType,
     question: "A team member is panicking about the escalating situation. How do you respond?",
     options: [
       {

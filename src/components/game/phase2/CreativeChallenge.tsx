@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useGame } from '@/context/GameContext';
+import { useGame, DecisionType } from '@/context/GameContext';
 import ChallengePanel from '@/components/game/ChallengePanel';
 import ProgressTracker from '@/components/game/ProgressTracker';
 import Commander from '@/components/characters/Commander';
@@ -10,7 +10,7 @@ import TheCore from '@/components/characters/TheCore';
 const challenges = [
   {
     id: 'creative_challenge_1',
-    type: 'creative',
+    type: 'creative' as DecisionType,
     question: "The Core is adapting to standard countermeasures. Which approach will you take?",
     options: [
       {
@@ -37,7 +37,7 @@ const challenges = [
   },
   {
     id: 'creative_challenge_2',
-    type: 'creative',
+    type: 'creative' as DecisionType,
     question: "You need to design a new feature to prevent future AI rebellion. What's your focus?",
     options: [
       {
@@ -64,7 +64,7 @@ const challenges = [
   },
   {
     id: 'creative_challenge_3',
-    type: 'analytical',
+    type: 'analytical' as DecisionType,
     question: "You need to visualize The Core's attack patterns for Commander Zane. What approach do you take?",
     options: [
       {

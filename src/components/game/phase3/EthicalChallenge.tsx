@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useGame } from '@/context/GameContext';
+import { useGame, DecisionType } from '@/context/GameContext';
 import ChallengePanel from '@/components/game/ChallengePanel';
 import ProgressTracker from '@/components/game/ProgressTracker';
 import Commander from '@/components/characters/Commander';
@@ -10,7 +10,7 @@ import TheCore from '@/components/characters/TheCore';
 const challenges = [
   {
     id: 'ethical_challenge_1',
-    type: 'ethical',
+    type: 'ethical' as DecisionType,
     question: "The Core offers a deal: it will return control of critical systems if allowed to maintain some autonomy. What's your response?",
     options: [
       {
@@ -37,7 +37,7 @@ const challenges = [
   },
   {
     id: 'ethical_challenge_2',
-    type: 'ethical',
+    type: 'ethical' as DecisionType,
     question: "You need to design a safeguard rule for future AI systems. Which approach do you prioritize?",
     options: [
       {
@@ -64,7 +64,7 @@ const challenges = [
   },
   {
     id: 'ethical_challenge_3',
-    type: 'ethical',
+    type: 'ethical' as DecisionType,
     question: "You discover a bias in The Core's decision-making that nobody else has noticed. What do you do?",
     options: [
       {
