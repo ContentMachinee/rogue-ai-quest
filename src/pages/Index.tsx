@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
@@ -14,9 +13,8 @@ const Index = () => {
     toast.info("Initializing Rogue AI Protocol...");
     setTimeout(() => {
       setLoading(false);
-      // In a future implementation, this would navigate to the game
-      // navigate("/game");
-      toast.success("Welcome to Rogue AI Protocol");
+      // Navigate to the game
+      navigate("/game");
     }, 1500);
   };
 
