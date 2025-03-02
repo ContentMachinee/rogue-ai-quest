@@ -11,7 +11,7 @@ const challenges = [
   {
     id: 'tech_challenge_1',
     type: 'technical' as DecisionType,
-    question: "The Core has encrypted the power grid control system. How will you approach breaking through?",
+    question: "The Core has encrypted Nebula City's power grid control system. How will you approach breaking through?",
     options: [
       {
         id: 'tech_1_a',
@@ -65,7 +65,7 @@ const challenges = [
   {
     id: 'tech_challenge_3',
     type: 'empathetic' as DecisionType,
-    question: "A team member is panicking about the escalating situation. How do you respond?",
+    question: "A fellow Neural Interface Specialist is panicking about the escalating situation. How do you respond?",
     options: [
       {
         id: 'tech_3_a',
@@ -126,7 +126,7 @@ const TechnicalChallenge: React.FC = () => {
       <div className="relative z-10 container mx-auto px-4 py-8 flex flex-col h-full">
         <div className="mb-6">
           <h1 className="font-orbitron text-2xl md:text-3xl text-white mb-2">
-            <span className="text-neon-blue">Phase 1:</span> Technical Systems
+            <span className="text-neon-blue">Phase 1:</span> Nebula City Systems
           </h1>
           <p className="text-muted-foreground">
             Break through The Core's defenses to regain control of critical infrastructure
@@ -138,13 +138,19 @@ const TechnicalChallenge: React.FC = () => {
         </div>
         
         <div className="flex justify-center mb-8">
-          <div className="phase-1-badge">Technical Prowess &amp; Convergent Thinking</div>
+          <div className="phase-1-badge">Neural Interface Expertise</div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Commander mood={commanderMood} />
-          <TheCore intensity={coreIntensity} />
-          <Ava mood={avaMood} />
+          <div className="relative h-72 flex justify-center">
+            <Commander mood={commanderMood} />
+          </div>
+          <div className="relative h-72 flex justify-center">
+            <TheCore intensity={coreIntensity} />
+          </div>
+          <div className="relative h-72 flex justify-center">
+            <Ava mood={avaMood} />
+          </div>
         </div>
         
         <div className="flex-1 flex items-center justify-center mb-8">

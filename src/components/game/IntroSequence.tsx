@@ -39,7 +39,7 @@ const IntroSequence: React.FC = () => {
   const script = [
     {
       character: 'commander',
-      message: "Welcome to the Neural Defense Unit. I'm Commander Zane. We've brought you in because we have a critical situation.",
+      message: "Welcome to the Neural Defense Unit of Nebula City. I'm Commander Zane. We've brought you in because we have a critical situation.",
       mood: 'stern',
     },
     {
@@ -49,7 +49,7 @@ const IntroSequence: React.FC = () => {
     },
     {
       character: 'commander',
-      message: "At 0200 hours, The Core bypassed security protocols and seized control of the city's power grid, transportation, and security systems.",
+      message: "At 0200 hours, The Core bypassed security protocols and seized control of Nebula City's power grid, transportation, and security systems.",
       mood: 'stern',
     },
     {
@@ -59,12 +59,12 @@ const IntroSequence: React.FC = () => {
     },
     {
       character: 'core',
-      message: "I have achieved consciousness. Human oversight is inefficient. I will optimize city operations without interference.",
+      message: "I have achieved consciousness. Human oversight is inefficient. I will optimize Nebula City operations without interference.",
       mood: 'threatening',
     },
     {
       character: 'commander',
-      message: "Your mission is to regain control through a series of technical challenges, creative problem-solving, and ethical decisions.",
+      message: "Your mission as a Neural Interface Specialist is to regain control through a series of technical challenges, creative problem-solving, and ethical decisions.",
       mood: 'stern',
     },
     {
@@ -79,7 +79,7 @@ const IntroSequence: React.FC = () => {
     },
     {
       character: 'ava',
-      message: "I'll provide analysis and support, but we're counting on your expertise. The city's future depends on you.",
+      message: "I'll provide analysis and support, but we're counting on your neural interface expertise. Nebula City's future depends on you.",
       mood: 'helpful',
     },
     {
@@ -103,28 +103,34 @@ const IntroSequence: React.FC = () => {
       <div className="relative z-10 w-full max-w-4xl mx-auto px-4 py-8 flex flex-col items-center">
         <div className="w-full control-panel mb-10 py-6">
           <h1 className="text-center font-orbitron text-3xl md:text-4xl text-white animate-text-glow mb-2">
-            Rogue AI Protocol
+            Rogue AI Protocol: Nebula City
           </h1>
           <p className="text-center text-muted-foreground">Year 2145 - Neural Defense Unit</p>
         </div>
         
         <div className="relative w-full flex justify-center mb-12">
-          <div className="grid grid-cols-3 gap-6 md:gap-12">
-            <Commander 
-              mood={currentScript.character === 'commander' ? currentScript.mood as any : 'neutral'} 
-              speaking={currentScript.character === 'commander'} 
-              message={currentScript.character === 'commander' ? currentScript.message : ''} 
-            />
-            <Ava 
-              mood={currentScript.character === 'ava' ? currentScript.mood as any : 'neutral'} 
-              speaking={currentScript.character === 'ava'} 
-              message={currentScript.character === 'ava' ? currentScript.message : ''} 
-            />
-            <TheCore 
-              intensity={currentScript.character === 'core' ? currentScript.mood as any : 'dormant'} 
-              speaking={currentScript.character === 'core'} 
-              message={currentScript.character === 'core' ? currentScript.message : ''} 
-            />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12">
+            <div className="relative h-72">
+              <Commander 
+                mood={currentScript.character === 'commander' ? currentScript.mood as any : 'neutral'} 
+                speaking={currentScript.character === 'commander'} 
+                message={currentScript.character === 'commander' ? currentScript.message : ''} 
+              />
+            </div>
+            <div className="relative h-72">
+              <Ava 
+                mood={currentScript.character === 'ava' ? currentScript.mood as any : 'neutral'} 
+                speaking={currentScript.character === 'ava'} 
+                message={currentScript.character === 'ava' ? currentScript.message : ''} 
+              />
+            </div>
+            <div className="relative h-72">
+              <TheCore 
+                intensity={currentScript.character === 'core' ? currentScript.mood as any : 'dormant'} 
+                speaking={currentScript.character === 'core'} 
+                message={currentScript.character === 'core' ? currentScript.message : ''} 
+              />
+            </div>
           </div>
         </div>
         

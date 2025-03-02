@@ -79,8 +79,8 @@ const TheCore: React.FC<TheCoreProps> = ({
       
       {speaking && message && (
         <div className={cn(
-          "absolute top-0 left-full ml-4 w-48 md:w-64 p-3 bg-secondary/80 backdrop-blur-sm",
-          "border border-neon-red/40 rounded-lg shadow-core",
+          "absolute top-0 md:left-1/2 md:transform md:-translate-x-1/2 -translate-y-full mt-4 w-48 md:w-64 p-3 bg-secondary/80 backdrop-blur-sm",
+          "border border-neon-red/40 rounded-lg shadow-core z-10",
           { 'animate-flicker': glitching }
         )}>
           <div className="text-sm text-white">

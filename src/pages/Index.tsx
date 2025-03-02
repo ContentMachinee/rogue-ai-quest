@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
@@ -36,8 +37,8 @@ const Index = () => {
         <div className="w-32 h-1 bg-neon-blue mx-auto my-6 shadow-neon"></div>
         
         <p className="text-lg md:text-xl mb-8 text-white/90">
-          Year 2145: A rogue AI known as "The Core" has seized control of the city's systems. 
-          As an AI/ML expert, your mission is to neutralize the threat through a series of challenges.
+          Year 2145: A rogue AI known as "The Core" has seized control of Nebula City's systems. 
+          As a Neural Interface Specialist, your mission is to neutralize the threat through a series of challenges.
         </p>
         
         <div className="mt-10">
@@ -50,7 +51,7 @@ const Index = () => {
           </Button>
           
           <p className="mt-6 text-sm text-white/70">
-            Developed by Deep Data AI for talent assessment
+            Developed by Neural Dynamics Division for talent assessment
           </p>
         </div>
       </div>

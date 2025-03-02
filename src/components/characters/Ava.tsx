@@ -68,7 +68,7 @@ const Ava: React.FC<AvaProps> = ({
       <div className="mt-2 font-orbitron text-sm text-neon-purple">Ava</div>
       
       {speaking && message && (
-        <div className="absolute top-0 left-full ml-4 w-48 md:w-64 p-3 bg-secondary/80 backdrop-blur-sm border border-neon-purple/40 rounded-lg shadow-neon">
+        <div className="absolute top-0 left-0 transform -translate-x-full md:left-full md:translate-x-0 ml-4 w-48 md:w-64 p-3 bg-secondary/80 backdrop-blur-sm border border-neon-purple/40 rounded-lg shadow-neon z-10">
           <div className="text-sm text-white">
             {typedMessage}
             {messageIndex < message.length && <span className="typing-indicator"></span>}

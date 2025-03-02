@@ -10,7 +10,7 @@ const GamePage = () => {
   useEffect(() => {
     // Initialize the game if it's not already started
     if (gameData.currentPhase === 'intro') {
-      toast.info("Beginning mission simulation...");
+      toast.info("Beginning Nebula City security protocols...");
     }
   }, [gameData.currentPhase]);
 
