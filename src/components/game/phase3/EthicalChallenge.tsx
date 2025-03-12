@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useGame } from '@/context/GameContext';
 import { DecisionType, GameChoice } from '@/types/game';
@@ -9,7 +10,7 @@ import TheCore from '@/components/characters/TheCore';
 
 const challenges: GameChoice[] = [
   {
-    i1d: 'ethical_challenge_1',
+    id: 'ethical_challenge_1',
     type: 'ethical' as DecisionType,
     scenario: 7,
     phase: 'phase3',
@@ -114,7 +115,7 @@ const EthicalChallenge: React.FC = () => {
       
       // Update character moods randomly for variety
       setCommanderMood(['neutral', 'stern', 'approving', 'concerned'][Math.floor(Math.random() * 4)] as any);
-      setAvaMood(['neutral', 'curious', 'helpful' | 'concerned'][Math.floor(Math.random() * 4)] as any);
+      setAvaMood(['neutral', 'curious', 'helpful', 'concerned'][Math.floor(Math.random() * 4)] as any);
       setCoreIntensity(['active', 'threatening', 'threatening', 'extreme'][Math.floor(Math.random() * 4)] as any);
     } else {
       // All phases complete, move to results
