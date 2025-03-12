@@ -6,7 +6,7 @@ import ProgressTracker from '@/components/game/ProgressTracker';
 import Commander from '@/components/characters/Commander';
 import Ava from '@/components/characters/Ava';
 import TheCore from '@/components/characters/TheCore';
-import { GameChoice } from '@/types/game';
+import { GameChoice, ScenarioId } from '@/types/game';
 
 const finalScenarios: GameChoice[] = [
   {
@@ -50,7 +50,11 @@ const finalScenarios: GameChoice[] = [
   }
 ];
 
-const FinalPhase: React.FC = () => {
+interface FinalPhaseProps {
+  scenarioId?: ScenarioId;
+}
+
+const FinalPhase: React.FC<FinalPhaseProps> = ({ scenarioId }) => {
   const { updateProgress, setGamePhase } = useGame();
   const [currentScenarioIndex, setCurrentScenarioIndex] = useState(0);
   const [commanderMood, setCommanderMood] = useState<'neutral' | 'stern' | 'approving' | 'concerned'>('stern');

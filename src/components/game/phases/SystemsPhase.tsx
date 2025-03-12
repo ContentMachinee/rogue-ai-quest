@@ -6,7 +6,7 @@ import ProgressTracker from '@/components/game/ProgressTracker';
 import Commander from '@/components/characters/Commander';
 import Ava from '@/components/characters/Ava';
 import TheCore from '@/components/characters/TheCore';
-import { GameChoice } from '@/types/game';
+import { GameChoice, ScenarioId } from '@/types/game';
 
 const systemsScenarios: GameChoice[] = [
   {
@@ -40,7 +40,11 @@ const systemsScenarios: GameChoice[] = [
   }
 ];
 
-const SystemsPhase: React.FC = () => {
+interface SystemsPhaseProps {
+  scenarioId?: ScenarioId;
+}
+
+const SystemsPhase: React.FC<SystemsPhaseProps> = ({ scenarioId }) => {
   const { updateProgress, setGamePhase } = useGame();
   const [currentScenarioIndex, setCurrentScenarioIndex] = useState(0);
   const [commanderMood, setCommanderMood] = useState<'neutral' | 'stern' | 'approving' | 'concerned'>('approving');

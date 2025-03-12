@@ -148,7 +148,7 @@ const infiltrationScenarios: Record<number, GameChoice[]> = {
           traits: {
             attentionToDetail: 3,
             analytical: 2,
-            patience: 2,
+            resilience: 2,
             security: 2
           }
         }
