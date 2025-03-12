@@ -11,17 +11,36 @@ import ResultsScreen from './ResultsScreen';
 
 const GameHub: React.FC = () => {
   const { gameData } = useGame();
-  const { currentPhase } = gameData;
+  const { currentPhase, currentScenario } = gameData;
+
+  // Get the current phase component based on current phase and scenario
+  const getCurrentPhaseComponent = () => {
+    switch (currentPhase) {
+      case 'intro':
+        return <IntroSequence />;
+      case 'infiltration':
+      case 'phase1':
+        return <InfiltrationPhase scenarioId={currentScenario} />;
+      case 'systems':
+      case 'phase2':
+        return <SystemsPhase scenarioId={currentScenario} />;
+      case 'ethical':
+      case 'phase3':
+        return <EthicalPhase scenarioId={currentScenario} />;
+      case 'counter':
+        return <CounterPhase scenarioId={currentScenario} />;
+      case 'final':
+        return <FinalPhase scenarioId={currentScenario} />;
+      case 'results':
+        return <ResultsScreen />;
+      default:
+        return <IntroSequence />;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-space">
-      {currentPhase === 'intro' && <IntroSequence />}
-      {(currentPhase === 'infiltration' || currentPhase === 'phase1') && <InfiltrationPhase />}
-      {(currentPhase === 'systems' || currentPhase === 'phase2') && <SystemsPhase />}
-      {(currentPhase === 'ethical' || currentPhase === 'phase3') && <EthicalPhase />}
-      {currentPhase === 'counter' && <CounterPhase />}
-      {currentPhase === 'final' && <FinalPhase />}
-      {currentPhase === 'results' && <ResultsScreen />}
+      {getCurrentPhaseComponent()}
     </div>
   );
 };

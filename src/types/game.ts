@@ -1,6 +1,8 @@
 
 export type GamePhase = 'intro' | 'infiltration' | 'systems' | 'ethical' | 'counter' | 'final' | 'results' | 'phase1' | 'phase2' | 'phase3';
 
+export type ScenarioId = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20;
+
 export type DecisionType = 'technical' | 'analytical' | 'ethical' | 'creative' | 'empathetic' | 'behavioral';
 
 export interface GameScore {
@@ -56,6 +58,14 @@ export interface UserMetrics {
 // Alias for UserMetrics to support existing code
 export type UserProfile = UserMetrics;
 
+export interface ScenarioInfo {
+  id: ScenarioId;
+  name: string;
+  phase: GamePhase;
+  description: string;
+  completed: boolean;
+}
+
 export interface GameChoice {
   id: string;
   type: DecisionType;
@@ -73,8 +83,10 @@ export interface GameChoice {
 
 export interface GameData {
   currentPhase: GamePhase;
+  currentScenario: ScenarioId;
   progress: number;
   choices: GameChoice[];
+  scenarios: ScenarioInfo[];
   metrics: UserMetrics;
   score: GameScore;
   startTime?: Date;
