@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useGame } from '@/context/GameContext';
 import { DecisionType, GameChoice } from '@/types/game';
@@ -41,6 +40,8 @@ const challenges: GameChoice[] = [
   {
     id: 'creative_challenge_2',
     type: 'creative' as DecisionType,
+    scenario: 5,
+    phase: 'phase2',
     question: "You need to design a new feature to prevent future AI rebellion. What's your focus?",
     options: [
       {
@@ -68,6 +69,8 @@ const challenges: GameChoice[] = [
   {
     id: 'creative_challenge_3',
     type: 'analytical' as DecisionType,
+    scenario: 6,
+    phase: 'phase2',
     question: "You need to visualize The Core's attack patterns for Commander Zane. What approach do you take?",
     options: [
       {
@@ -103,18 +106,12 @@ const CreativeChallenge: React.FC = () => {
 
   const handleChallengeComplete = () => {
     if (currentChallengeIndex < challenges.length - 1) {
-      // Move to next challenge
       setCurrentChallengeIndex(prev => prev + 1);
-      
-      // Update progress (phase 2 is 33-66%)
       updateProgress(33 + Math.floor((currentChallengeIndex + 1) / challenges.length * 33));
-      
-      // Update character moods randomly for variety
       setCommanderMood(['neutral', 'stern', 'approving', 'concerned'][Math.floor(Math.random() * 4)] as any);
       setAvaMood(['neutral', 'curious', 'helpful', 'concerned'][Math.floor(Math.random() * 4)] as any);
       setCoreIntensity(['active', 'threatening', 'threatening', 'extreme'][Math.floor(Math.random() * 4)] as any);
     } else {
-      // Phase 2 complete, move to phase 3
       updateProgress(66);
       setGamePhase('phase3');
     }

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useGame } from '@/context/GameContext';
 import { DecisionType, GameChoice } from '@/types/game';
@@ -10,7 +9,7 @@ import TheCore from '@/components/characters/TheCore';
 
 const challenges: GameChoice[] = [
   {
-    id: 'ethical_challenge_1',
+    i1d: 'ethical_challenge_1',
     type: 'ethical' as DecisionType,
     scenario: 7,
     phase: 'phase3',
@@ -21,9 +20,9 @@ const challenges: GameChoice[] = [
         text: "Negotiate with The Core to find a compromise that allows monitored autonomy",
         traits: {
           ethics: 2,
-          empathy: 3,
+          divergentThinking: 2,
           riskTaking: 2,
-          divergentThinking: 2
+          creativity: 2
         }
       },
       {
@@ -41,6 +40,8 @@ const challenges: GameChoice[] = [
   {
     id: 'ethical_challenge_2',
     type: 'ethical' as DecisionType,
+    scenario: 8,
+    phase: 'phase3',
     question: "You need to design a safeguard rule for future AI systems. Which approach do you prioritize?",
     options: [
       {
@@ -68,6 +69,8 @@ const challenges: GameChoice[] = [
   {
     id: 'ethical_challenge_3',
     type: 'ethical' as DecisionType,
+    scenario: 9,
+    phase: 'phase3',
     question: "You discover a bias in The Core's decision-making that nobody else has noticed. What do you do?",
     options: [
       {
@@ -111,7 +114,7 @@ const EthicalChallenge: React.FC = () => {
       
       // Update character moods randomly for variety
       setCommanderMood(['neutral', 'stern', 'approving', 'concerned'][Math.floor(Math.random() * 4)] as any);
-      setAvaMood(['neutral', 'curious', 'helpful', 'concerned'][Math.floor(Math.random() * 4)] as any);
+      setAvaMood(['neutral', 'curious', 'helpful' | 'concerned'][Math.floor(Math.random() * 4)] as any);
       setCoreIntensity(['active', 'threatening', 'threatening', 'extreme'][Math.floor(Math.random() * 4)] as any);
     } else {
       // All phases complete, move to results
