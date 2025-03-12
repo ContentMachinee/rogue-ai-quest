@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useGame } from '@/context/GameContext';
 import ChallengePanel from '@/components/game/ChallengePanel';
@@ -61,7 +60,7 @@ const infiltrationScenarios: GameChoice[] = [
         traits: {
           aiMlKnowledge: 2,
           analytical: 3,
-          decisiveness: 2,
+          determination: 2,
           attentionToDetail: 1
         }
       },
@@ -76,8 +75,7 @@ const infiltrationScenarios: GameChoice[] = [
         }
       }
     ]
-  },
-  // More scenarios will be added in subsequent updates
+  }
 ];
 
 const InfiltrationPhase: React.FC = () => {

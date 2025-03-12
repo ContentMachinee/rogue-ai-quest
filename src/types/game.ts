@@ -1,5 +1,5 @@
 
-export type GamePhase = 'intro' | 'infiltration' | 'systems' | 'ethical' | 'counter' | 'final' | 'results';
+export type GamePhase = 'intro' | 'infiltration' | 'systems' | 'ethical' | 'counter' | 'final' | 'results' | 'phase1' | 'phase2' | 'phase3';
 
 export type DecisionType = 'technical' | 'analytical' | 'ethical' | 'creative' | 'empathetic' | 'behavioral';
 
@@ -34,6 +34,7 @@ export interface UserMetrics {
   determination: number;
   accountability: number;
   resilience: number;
+  decisiveness: number; // Added missing property
   
   // Personality (Big Five)
   openness: number;
@@ -42,6 +43,9 @@ export interface UserMetrics {
   agreeableness: number;
   neuroticism: number;
 }
+
+// Alias for UserMetrics to support existing code
+export type UserProfile = UserMetrics;
 
 export interface GameChoice {
   id: string;
@@ -66,4 +70,5 @@ export interface GameData {
   score: GameScore;
   startTime?: Date;
   endTime?: Date;
+  profile?: UserProfile; // Added to support ResultsScreen.tsx
 }

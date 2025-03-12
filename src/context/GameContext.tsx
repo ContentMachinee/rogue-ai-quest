@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { GamePhase, GameChoice, GameData, UserMetrics, GameScore } from '@/types/game';
+import { GamePhase, GameChoice, GameData, UserMetrics, GameScore, UserProfile, DecisionType } from '@/types/game';
 
 const defaultMetrics: UserMetrics = {
   // Technical Skills
@@ -26,6 +26,7 @@ const defaultMetrics: UserMetrics = {
   determination: 0,
   accountability: 0,
   resilience: 0,
+  decisiveness: 0,
   
   // Personality (Big Five)
   openness: 0,
@@ -40,6 +41,7 @@ const defaultGameData: GameData = {
   progress: 0,
   choices: [],
   metrics: { ...defaultMetrics },
+  profile: { ...defaultMetrics },
   score: {
     points: 0,
     badges: [],
@@ -171,3 +173,6 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
+
+export { GamePhase, GameChoice, UserProfile, DecisionType };
+export { useGame };

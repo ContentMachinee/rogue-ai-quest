@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useGame } from '@/context/GameContext';
 import ChatBubble from '@/components/ui/ChatBubble';
@@ -33,7 +32,7 @@ const IntroSequence: React.FC = () => {
   };
 
   const startGame = () => {
-    setGamePhase('phase1');
+    setGamePhase('infiltration'); // Changed to match the game phase enum
   };
 
   const script = [

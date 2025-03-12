@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { useGame, GameChoice } from '@/context/GameContext';
+import { useGame } from '@/context/GameContext';
+import { GameChoice } from '@/types/game';
 
 interface ChallengePanelProps {
   challenge: GameChoice;

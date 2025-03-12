@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { useGame, GamePhase } from '@/context/GameContext';
+import { useGame } from '@/context/GameContext';
+import { GamePhase } from '@/types/game';
 
 const ProgressTracker: React.FC = () => {
   const { gameData } = useGame();
