@@ -2,9 +2,11 @@
 import React from 'react';
 import { useGame } from '@/context/GameContext';
 import IntroSequence from './IntroSequence';
-import TechnicalChallenge from './phase1/TechnicalChallenge';
-import CreativeChallenge from './phase2/CreativeChallenge';
-import EthicalChallenge from './phase3/EthicalChallenge';
+import InfiltrationPhase from './phases/InfiltrationPhase';
+import SystemsPhase from './phases/SystemsPhase';
+import EthicalPhase from './phases/EthicalPhase';
+import CounterPhase from './phases/CounterPhase';
+import FinalPhase from './phases/FinalPhase';
 import ResultsScreen from './ResultsScreen';
 
 const GameHub: React.FC = () => {
@@ -14,9 +16,11 @@ const GameHub: React.FC = () => {
   return (
     <div className="min-h-screen bg-space">
       {currentPhase === 'intro' && <IntroSequence />}
-      {currentPhase === 'phase1' && <TechnicalChallenge />}
-      {currentPhase === 'phase2' && <CreativeChallenge />}
-      {currentPhase === 'phase3' && <EthicalChallenge />}
+      {currentPhase === 'infiltration' && <InfiltrationPhase />}
+      {currentPhase === 'systems' && <SystemsPhase />}
+      {currentPhase === 'ethical' && <EthicalPhase />}
+      {currentPhase === 'counter' && <CounterPhase />}
+      {currentPhase === 'final' && <FinalPhase />}
       {currentPhase === 'results' && <ResultsScreen />}
     </div>
   );

@@ -1,46 +1,51 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { GamePhase, GameChoice, GameData, UserMetrics, GameScore } from '@/types/game';
 
-// Define the types for our game data
-export type GamePhase = 'intro' | 'phase1' | 'phase2' | 'phase3' | 'results';
-export type DecisionType = 'technical' | 'analytical' | 'ethical' | 'creative' | 'empathetic';
+const defaultMetrics: UserMetrics = {
+  // Technical Skills
+  codingProficiency: 0,
+  algorithmicThinking: 0,
+  debugging: 0,
+  optimization: 0,
+  aiMlKnowledge: 0,
+  dataProcessing: 0,
+  security: 0,
+  
+  // Aptitudes
+  problemSolving: 0,
+  analytical: 0,
+  creative: 0,
+  adaptability: 0,
+  learning: 0,
+  attentionToDetail: 0,
+  
+  // Character Traits
+  integrity: 0,
+  empathy: 0,
+  trustworthiness: 0,
+  determination: 0,
+  accountability: 0,
+  resilience: 0,
+  
+  // Personality (Big Five)
+  openness: 0,
+  conscientiousness: 0,
+  extraversion: 0,
+  agreeableness: 0,
+  neuroticism: 0,
+};
 
-export interface GameChoice {
-  id: string;
-  type: DecisionType;
-  question: string;
-  options: {
-    id: string;
-    text: string;
-    traits: {
-      [key: string]: number; // Maps traits to values
-    };
-  }[];
-  userChoice?: string; // ID of the selected option
-  timeSpent?: number; // Time spent on this choice in ms
-}
-
-export interface UserProfile {
-  technicalSkill: number;
-  convergentThinking: number;
-  divergentThinking: number;
-  ethics: number;
-  empathy: number;
-  resilience: number;
-  creativity: number;
-  riskTaking: number;
-  decisiveness: number;
-  communication: number;
-}
-
-export interface GameData {
-  currentPhase: GamePhase;
-  progress: number; // 0-100
-  choices: GameChoice[];
-  profile: UserProfile;
-  startTime?: Date;
-  endTime?: Date;
-}
+const defaultGameData: GameData = {
+  currentPhase: 'intro',
+  progress: 0,
+  choices: [],
+  metrics: { ...defaultMetrics },
+  score: {
+    points: 0,
+    badges: [],
+    timeBonus: 0
+  }
+};
 
 interface GameContextType {
   gameData: GameData;
@@ -51,33 +56,12 @@ interface GameContextType {
   isLoading: boolean;
 }
 
-const defaultProfile: UserProfile = {
-  technicalSkill: 0,
-  convergentThinking: 0,
-  divergentThinking: 0,
-  ethics: 0,
-  empathy: 0,
-  resilience: 0,
-  creativity: 0,
-  riskTaking: 0,
-  decisiveness: 0,
-  communication: 0,
-};
-
-const defaultGameData: GameData = {
-  currentPhase: 'intro',
-  progress: 0,
-  choices: [],
-  profile: { ...defaultProfile },
-};
-
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [gameData, setGameData] = useState<GameData>({ ...defaultGameData });
   const [isLoading, setIsLoading] = useState(false);
 
-  // Initialize game data or load from storage if available
   useEffect(() => {
     const savedData = localStorage.getItem('rogue_ai_game_data');
     if (savedData) {
@@ -91,7 +75,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  // Save game data to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('rogue_ai_game_data', JSON.stringify(gameData));
   }, [gameData]);
@@ -107,7 +90,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateProgress = (progress: number) => {
     setGameData(prev => ({
       ...prev,
-      progress: Math.min(100, Math.max(0, progress)), // Clamp between 0-100
+      progress: Math.min(100, Math.max(0, progress)),
     }));
   };
 
@@ -115,41 +98,44 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
 
     setGameData(prev => {
-      // Find the choice in our game data
       const choices = [...prev.choices];
       const choiceIndex = choices.findIndex(c => c.id === choiceId);
+      const metrics = { ...prev.metrics };
+      const score = { ...prev.score };
 
       if (choiceIndex >= 0) {
-        // Update existing choice
         choices[choiceIndex] = {
           ...choices[choiceIndex],
           userChoice: optionId,
           timeSpent,
         };
-      }
 
-      // Find the selected option to update user profile
-      const choice = choices.find(c => c.id === choiceId);
-      const selectedOption = choice?.options.find(o => o.id === optionId);
-      const profile = { ...prev.profile };
+        const choice = choices[choiceIndex];
+        const selectedOption = choice.options.find(o => o.id === optionId);
 
-      // Update profile based on the choice traits
-      if (selectedOption?.traits) {
-        Object.entries(selectedOption.traits).forEach(([trait, value]) => {
-          if (trait in profile) {
-            profile[trait as keyof UserProfile] += value;
-          }
-        });
+        if (selectedOption?.traits) {
+          Object.entries(selectedOption.traits).forEach(([trait, value]) => {
+            if (trait in metrics) {
+              metrics[trait as keyof UserMetrics] += value as number;
+            }
+          });
+        }
+
+        score.points += 50;
+        if (timeSpent < 30000) {
+          score.points += 20;
+          score.timeBonus += 20;
+        }
       }
 
       return {
         ...prev,
         choices,
-        profile,
+        metrics,
+        score,
       };
     });
 
-    // Simulate processing time for analysis
     setTimeout(() => {
       setIsLoading(false);
     }, 800);
