@@ -23,14 +23,14 @@ const GameHub: React.FC = () => {
         return <InfiltrationPhase scenarioId={currentScenario} />;
       case 'systems':
       case 'phase2':
-        return <SystemsPhase />;
+        return <SystemsPhase scenarioId={currentScenario} />;
       case 'ethical':
       case 'phase3':
-        return <EthicalPhase />;
+        return <EthicalPhase scenarioId={currentScenario} />;
       case 'counter':
-        return <CounterPhase />;
+        return <CounterPhase scenarioId={currentScenario} />;
       case 'final':
-        return <FinalPhase />;
+        return <FinalPhase scenarioId={currentScenario} />;
       case 'results':
         return <ResultsScreen />;
       default:
