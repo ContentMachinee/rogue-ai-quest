@@ -34,7 +34,7 @@ export interface UserMetrics {
   determination: number;
   accountability: number;
   resilience: number;
-  decisiveness: number; // Added missing property
+  decisiveness: number;
   
   // Personality (Big Five)
   openness: number;
@@ -42,6 +42,15 @@ export interface UserMetrics {
   extraversion: number;
   agreeableness: number;
   neuroticism: number;
+  
+  // Additional metrics for Results Screen
+  technicalSkill: number;
+  convergentThinking: number;
+  divergentThinking: number;
+  creativity: number;
+  ethics: number;
+  riskTaking: number;
+  communication: number;
 }
 
 // Alias for UserMetrics to support existing code
@@ -70,5 +79,5 @@ export interface GameData {
   score: GameScore;
   startTime?: Date;
   endTime?: Date;
-  profile?: UserProfile; // Added to support ResultsScreen.tsx
+  profile?: UserProfile;
 }

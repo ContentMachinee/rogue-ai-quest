@@ -1,5 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { GamePhase, GameChoice, GameData, UserMetrics, GameScore, UserProfile, DecisionType } from '@/types/game';
+import { 
+  GamePhase, 
+  GameChoice, 
+  GameData, 
+  UserMetrics, 
+  GameScore, 
+  UserProfile, 
+  DecisionType 
+} from '@/types/game';
 
 const defaultMetrics: UserMetrics = {
   // Technical Skills
@@ -34,6 +42,15 @@ const defaultMetrics: UserMetrics = {
   extraversion: 0,
   agreeableness: 0,
   neuroticism: 0,
+  
+  // Additional metrics for Results Screen
+  technicalSkill: 0,
+  convergentThinking: 0,
+  divergentThinking: 0,
+  creativity: 0,
+  ethics: 0,
+  riskTaking: 0,
+  communication: 0,
 };
 
 const defaultGameData: GameData = {
@@ -135,6 +152,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         choices,
         metrics,
         score,
+        profile: metrics, // Ensure profile is updated alongside metrics
       };
     });
 
@@ -173,6 +191,3 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
-
-export { GamePhase, GameChoice, UserProfile, DecisionType };
-export { useGame };

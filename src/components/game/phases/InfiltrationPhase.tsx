@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useGame } from '@/context/GameContext';
 import ChallengePanel from '@/components/game/ChallengePanel';
@@ -22,7 +23,8 @@ const infiltrationScenarios: GameChoice[] = [
           codingProficiency: 3,
           algorithmicThinking: 2,
           optimization: 2,
-          security: 1
+          security: 1,
+          technicalSkill: 3
         }
       },
       {
@@ -32,7 +34,8 @@ const infiltrationScenarios: GameChoice[] = [
           aiMlKnowledge: 3,
           analytical: 2,
           problemSolving: 2,
-          attentionToDetail: 1
+          attentionToDetail: 1,
+          convergentThinking: 3
         }
       },
       {
@@ -42,7 +45,9 @@ const infiltrationScenarios: GameChoice[] = [
           adaptability: 2,
           creative: 2,
           optimization: 2,
-          problemSolving: 2
+          problemSolving: 2,
+          technicalSkill: 1,
+          divergentThinking: 2
         }
       }
     ]
@@ -61,7 +66,8 @@ const infiltrationScenarios: GameChoice[] = [
           aiMlKnowledge: 2,
           analytical: 3,
           determination: 2,
-          attentionToDetail: 1
+          attentionToDetail: 1,
+          convergentThinking: 2
         }
       },
       {
@@ -71,7 +77,9 @@ const infiltrationScenarios: GameChoice[] = [
           aiMlKnowledge: 3,
           optimization: 2,
           creative: 2,
-          problemSolving: 1
+          problemSolving: 1,
+          technicalSkill: 2,
+          divergentThinking: 1
         }
       }
     ]
