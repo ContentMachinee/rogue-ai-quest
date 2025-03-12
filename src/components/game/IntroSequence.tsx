@@ -1,9 +1,12 @@
+
 import React, { useState, useEffect } from 'react';
 import { useGame } from '@/context/GameContext';
 import ChatBubble from '@/components/ui/ChatBubble';
 import Commander from '@/components/characters/Commander';
 import Ava from '@/components/characters/Ava';
 import TheCore from '@/components/characters/TheCore';
+import { typography } from '@/lib/typography';
+import { cn } from '@/lib/utils';
 
 const IntroSequence: React.FC = () => {
   const { setGamePhase } = useGame();
@@ -101,10 +104,12 @@ const IntroSequence: React.FC = () => {
       
       <div className="relative z-10 w-full max-w-4xl mx-auto px-4 py-8 flex flex-col items-center">
         <div className="w-full control-panel mb-10 py-6">
-          <h1 className="text-center font-orbitron text-3xl md:text-4xl text-white animate-text-glow mb-2">
+          <h1 className={cn(typography.h1, "text-center animate-text-glow mb-2")}>
             Rogue AI Protocol: Nebula City
           </h1>
-          <p className="text-center text-muted-foreground">Year 2145 - Neural Defense Unit</p>
+          <p className={cn(typography.bodySmall, "text-center")}>
+            Year 2145 - Neural Defense Unit
+          </p>
         </div>
         
         <div className="relative w-full flex justify-center mb-12">
@@ -136,7 +141,7 @@ const IntroSequence: React.FC = () => {
         <div className="w-full mt-auto flex justify-center">
           <button 
             onClick={advanceStep} 
-            className="neon-button animate-pulse-glow"
+            className={cn("neon-button animate-pulse-glow", typography.button)}
           >
             {step < script.length - 1 ? 'Continue' : 'Begin Mission'}
           </button>
@@ -144,7 +149,7 @@ const IntroSequence: React.FC = () => {
           {showSkip && (
             <button 
               onClick={skipIntro} 
-              className="secondary-button ml-4"
+              className={cn("secondary-button ml-4", typography.button)}
             >
               Skip Intro
             </button>

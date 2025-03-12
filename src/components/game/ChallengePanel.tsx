@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { useGame } from '@/context/GameContext';
 import { GameChoice } from '@/types/game';
+import { typography } from '@/lib/typography';
 
 interface ChallengePanelProps {
   challenge: GameChoice;
@@ -83,7 +84,8 @@ const ChallengePanel: React.FC<ChallengePanelProps> = ({
     <div className={cn("control-panel w-full max-w-3xl mx-auto", className)}>
       <div className="mb-6">
         <div className={cn(
-          "text-sm font-semibold mb-1",
+          typography.badge,
+          "mb-1",
           {
             'text-neon-blue': challenge.type === 'technical' || challenge.type === 'analytical',
             'text-neon-green': challenge.type === 'creative',
@@ -97,9 +99,9 @@ const ChallengePanel: React.FC<ChallengePanelProps> = ({
           {challenge.type === 'empathetic' && 'TEAM COMMUNICATION'}
         </div>
         
-        <h3 className="interface-title mb-4">{challenge.question}</h3>
+        <h3 className={cn(typography.h3, "mb-4")}>{challenge.question}</h3>
         
-        <div className="text-muted-foreground text-sm mb-6">
+        <div className={cn(typography.bodySmall, "mb-6")}>
           Select your approach carefully. Your choice reveals your decision-making style.
         </div>
       </div>
@@ -121,13 +123,13 @@ const ChallengePanel: React.FC<ChallengePanelProps> = ({
               }
             )}
           >
-            <div className="font-medium text-white">{option.text}</div>
+            <div className={cn(typography.body, "font-medium text-white")}>{option.text}</div>
           </button>
         ))}
       </div>
       
       <div className="flex justify-between items-center">
-        <div className="text-sm text-muted-foreground">
+        <div className={cn(typography.caption, "text-muted-foreground")}>
           Time: {Math.floor(timeSpent / 60)}:{(timeSpent % 60).toString().padStart(2, '0')}
         </div>
         
@@ -136,6 +138,7 @@ const ChallengePanel: React.FC<ChallengePanelProps> = ({
           disabled={!selectedOption || isSubmitting}
           className={cn(
             "neon-button",
+            typography.button,
             {
               "opacity-50 cursor-not-allowed": !selectedOption || isSubmitting,
               "animate-pulse": selectedOption && !isSubmitting,
@@ -150,7 +153,7 @@ const ChallengePanel: React.FC<ChallengePanelProps> = ({
         <div className="mt-6 p-4 bg-neon-blue/10 border border-neon-blue/30 rounded-lg animate-appear">
           <div className="flex items-center">
             <div className="w-4 h-4 rounded-full bg-neon-blue animate-pulse mr-3"></div>
-            <p className="text-white">{feedbackMessage}</p>
+            <p className={typography.body}>{feedbackMessage}</p>
           </div>
         </div>
       )}

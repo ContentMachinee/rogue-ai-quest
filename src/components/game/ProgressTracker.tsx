@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { useGame } from '@/context/GameContext';
 import { GamePhase, ScenarioId } from '@/types/game';
 import { CheckCircle, Circle, CircleDot } from 'lucide-react';
+import { typography } from '@/lib/typography';
 
 const ProgressTracker: React.FC = () => {
   const { gameData, setScenario } = useGame();
@@ -59,7 +60,7 @@ const ProgressTracker: React.FC = () => {
 
   return (
     <div className="w-full glass-panel p-4">
-      <div className="interface-title mb-4">Mission Progress</div>
+      <div className={cn(typography.h4, "mb-4")}>Mission Progress</div>
       
       <div className="relative">
         {/* Progress bar based on completed scenarios */}
@@ -86,9 +87,10 @@ const ProgressTracker: React.FC = () => {
                     }
                   )}
                 />
-                <div className="mt-1 text-xs font-orbitron text-center">
+                <div className="mt-1 text-center">
                   <span 
                     className={cn(
+                      typography.badge,
                       "transition-colors",
                       {
                         'text-neon-blue': status === 'active',
@@ -108,7 +110,7 @@ const ProgressTracker: React.FC = () => {
         {/* Show scenario dots for current phase */}
         {currentPhaseScenarios.length > 0 && (
           <div className="mt-6">
-            <div className="text-xs text-muted-foreground mb-2">Current Phase Scenarios:</div>
+            <div className={cn(typography.caption, "text-muted-foreground mb-2")}>Current Phase Scenarios:</div>
             <div className="flex space-x-4 justify-center">
               {currentPhaseScenarios.map(scenarioId => {
                 const scenario = scenarios.find(s => s.id === scenarioId);
@@ -136,9 +138,9 @@ const ProgressTracker: React.FC = () => {
                         <Circle className="w-5 h-5 text-muted-foreground" />
                       )}
                     </div>
-                    <div className="mt-1 text-xs max-w-[100px] text-center">
+                    <div className="mt-1 text-center max-w-[100px]">
                       <span className={cn(
-                        "font-orbitron",
+                        typography.badge,
                         {
                           "text-neon-blue": isActive,
                           "text-neon-green": isCompleted,

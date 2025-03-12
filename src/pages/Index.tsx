@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { BrainCircuitIcon, ShieldIcon, RocketIcon } from 'lucide-react';
+import { typography } from '@/lib/typography';
+import { cn } from '@/lib/utils';
 
 const Index = () => {
   const [loading, setLoading] = useState(false);
@@ -48,13 +50,13 @@ const Index = () => {
       <div className={`z-10 glass-panel p-8 w-full max-w-3xl text-center transition-all duration-1000 ${fadeIn ? 'opacity-100 transform-none' : 'opacity-0 translate-y-10'}`}>
         <div className="flex items-center justify-center mb-4">
           <BrainCircuitIcon className="w-12 h-12 text-neon-blue mr-3" />
-          <h1 className="text-4xl md:text-6xl font-orbitron font-bold text-glow">
+          <h1 className={cn(typography.h1, "text-glow")}>
             ROGUE AI PROTOCOL
           </h1>
         </div>
         <div className="w-32 h-1 bg-neon-blue mx-auto my-6 shadow-neon"></div>
         
-        <p className="text-lg md:text-xl mb-8 text-white/90 leading-relaxed">
+        <p className={cn(typography.bodyLarge, "mb-8 text-white/90 leading-relaxed")}>
           Year 2145: A rogue AI known as "The Core" has seized control of Nebula City's systems. 
           As a Neural Interface Specialist, your mission is to neutralize the threat through a series of challenges.
         </p>
@@ -62,18 +64,24 @@ const Index = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 mb-8">
           <div className="bg-secondary/30 p-5 rounded-lg border border-white/10 hover:border-neon-blue/30 transition-all">
             <ShieldIcon className="w-10 h-10 text-neon-blue mb-3 mx-auto" />
-            <h3 className="font-orbitron text-white mb-2">Critical Systems</h3>
-            <p className="text-sm text-white/70">Regain access to Nebula City's defense systems through technical challenges.</p>
+            <h3 className={cn(typography.h4, "mb-2")}>Critical Systems</h3>
+            <p className={typography.bodySmall}>
+              Regain access to Nebula City's defense systems through technical challenges.
+            </p>
           </div>
           <div className="bg-secondary/30 p-5 rounded-lg border border-white/10 hover:border-neon-purple/30 transition-all">
             <BrainCircuitIcon className="w-10 h-10 text-neon-purple mb-3 mx-auto" />
-            <h3 className="font-orbitron text-white mb-2">Neural Interfaces</h3>
-            <p className="text-sm text-white/70">Use your specialist knowledge to outsmart The Core's evolving protocols.</p>
+            <h3 className={cn(typography.h4, "mb-2")}>Neural Interfaces</h3>
+            <p className={typography.bodySmall}>
+              Use your specialist knowledge to outsmart The Core's evolving protocols.
+            </p>
           </div>
           <div className="bg-secondary/30 p-5 rounded-lg border border-white/10 hover:border-neon-green/30 transition-all">
             <RocketIcon className="w-10 h-10 text-neon-green mb-3 mx-auto" />
-            <h3 className="font-orbitron text-white mb-2">Talent Assessment</h3>
-            <p className="text-sm text-white/70">Your decisions reveal your unique approach to Neural Interface challenges.</p>
+            <h3 className={cn(typography.h4, "mb-2")}>Talent Assessment</h3>
+            <p className={typography.bodySmall}>
+              Your decisions reveal your unique approach to Neural Interface challenges.
+            </p>
           </div>
         </div>
         
@@ -81,7 +89,7 @@ const Index = () => {
           <Button 
             onClick={startGame}
             disabled={loading}
-            className="neon-button text-lg px-8 py-3 group"
+            className={cn("neon-button text-lg px-8 py-3 group", typography.button)}
           >
             {loading ? (
               <span className="flex items-center">
@@ -96,7 +104,7 @@ const Index = () => {
             )}
           </Button>
           
-          <p className="mt-6 text-sm text-white/70">
+          <p className={cn(typography.caption, "mt-6")}>
             Developed by Neural Dynamics Division for Neural Interface Specialist assessment
           </p>
         </div>

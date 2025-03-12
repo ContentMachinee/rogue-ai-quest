@@ -9,6 +9,8 @@ import TheCore from '@/components/characters/TheCore';
 import { infiltrationScenarios } from '@/data/scenarios/infiltrationScenarios';
 import { GameChoice, ScenarioId } from '@/types/game';
 import { toast } from 'sonner';
+import { typography } from '@/lib/typography';
+import { cn } from '@/lib/utils';
 
 interface InfiltrationPhaseProps {
   scenarioId?: ScenarioId;
@@ -66,10 +68,10 @@ const InfiltrationPhase: React.FC<InfiltrationPhaseProps> = ({ scenarioId }) => 
       
       <div className="relative z-10 container mx-auto px-4 py-8 flex flex-col h-full">
         <div className="mb-6">
-          <h1 className="font-orbitron text-2xl md:text-3xl text-white mb-2">
+          <h1 className={cn(typography.h2, "mb-2")}>
             <span className="text-neon-blue">Phase 1:</span> System Infiltration
           </h1>
-          <p className="text-muted-foreground">
+          <p className={typography.bodySmall}>
             Break through The Core's defenses and establish your presence in the system
           </p>
         </div>

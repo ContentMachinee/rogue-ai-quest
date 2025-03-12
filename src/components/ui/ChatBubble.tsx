@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { typography } from '@/lib/typography';
 
 interface ChatBubbleProps {
   message: string;
@@ -56,7 +57,8 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
     )}>
       {sender !== 'system' && (
         <div className={cn(
-          "text-xs font-orbitron mb-2",
+          typography.badge,
+          "mb-2",
           {
             'text-neon-purple': sender === 'ava',
             'text-neon-blue': sender === 'commander',
@@ -69,7 +71,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
         </div>
       )}
       
-      <div className="text-white">
+      <div className={cn(typography.body, "text-white")}>
         {displayedMessage}
         {!isComplete && <span className="typing-indicator"></span>}
       </div>

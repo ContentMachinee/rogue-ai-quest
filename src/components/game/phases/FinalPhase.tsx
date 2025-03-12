@@ -7,6 +7,8 @@ import Commander from '@/components/characters/Commander';
 import Ava from '@/components/characters/Ava';
 import TheCore from '@/components/characters/TheCore';
 import { GameChoice, ScenarioId } from '@/types/game';
+import { typography } from '@/lib/typography';
+import { cn } from '@/lib/utils';
 
 const finalScenarios: GameChoice[] = [
   {
@@ -84,10 +86,10 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ scenarioId }) => {
       
       <div className="relative z-10 container mx-auto px-4 py-8 flex flex-col h-full">
         <div className="mb-6">
-          <h1 className="font-orbitron text-2xl md:text-3xl text-white mb-2">
+          <h1 className={cn(typography.h2, "mb-2")}>
             <span className="text-neon-green">Phase 5:</span> Final Assault
           </h1>
-          <p className="text-muted-foreground">
+          <p className={typography.bodySmall}>
             Execute the final containment protocol to neutralize The Core
           </p>
         </div>

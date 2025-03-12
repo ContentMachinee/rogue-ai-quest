@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { useGame } from '@/context/GameContext';
 import { UserProfile } from '@/types/game';
 import { cn } from '@/lib/utils';
+import { typography } from '@/lib/typography';
 
 const ResultsScreen: React.FC = () => {
   const { gameData, resetGame } = useGame();
@@ -79,10 +79,10 @@ const ResultsScreen: React.FC = () => {
       
       <div className="relative z-10 container mx-auto px-4 py-8 flex flex-col h-full">
         <div className="mb-8 text-center">
-          <h1 className="font-orbitron text-3xl md:text-4xl text-white mb-4 animate-text-glow">
+          <h1 className={cn(typography.h1, "mb-4 animate-text-glow")}>
             Mission Complete
           </h1>
-          <p className="text-xl text-muted-foreground">
+          <p className={cn(typography.bodyLarge, "text-muted-foreground")}>
             Psychometric Assessment Results
           </p>
         </div>
@@ -94,7 +94,7 @@ const ResultsScreen: React.FC = () => {
             { "animate-appear": revealStep >= 1 },
             { "opacity-0": revealStep < 1 }
           )}>
-            <h2 className="interface-title mb-4">Technical Capabilities</h2>
+            <h2 className={cn(typography.h3, "mb-4")}>Technical Capabilities</h2>
             
             <div className="space-y-4">
               <div>
@@ -157,7 +157,7 @@ const ResultsScreen: React.FC = () => {
             { "animate-appear": revealStep >= 2 },
             { "opacity-0": revealStep < 2 }
           )}>
-            <h2 className="interface-title mb-4">Personality Profile</h2>
+            <h2 className={cn(typography.h3, "mb-4")}>Personality Profile</h2>
             
             <div className="space-y-4">
               <div>
@@ -220,7 +220,7 @@ const ResultsScreen: React.FC = () => {
             { "animate-appear": revealStep >= 3 },
             { "opacity-0": revealStep < 3 }
           )}>
-            <h2 className="interface-title mb-4">Decision-Making Profile</h2>
+            <h2 className={cn(typography.h3, "mb-4")}>Decision-Making Profile</h2>
             
             <div className="space-y-4">
               <div>
@@ -269,7 +269,7 @@ const ResultsScreen: React.FC = () => {
             { "animate-appear": revealStep >= 4 },
             { "opacity-0": revealStep < 4 }
           )}>
-            <h2 className="interface-title mb-4">AI/ML Career Archetype</h2>
+            <h2 className={cn(typography.h3, "mb-4")}>AI/ML Career Archetype</h2>
             
             <div className="p-6 bg-neon-purple/10 border border-neon-purple/30 rounded-lg mb-4">
               <div className="font-orbitron text-2xl text-neon-purple mb-2">
@@ -304,8 +304,8 @@ const ResultsScreen: React.FC = () => {
           { "animate-appear": revealStep >= 5 },
           { "opacity-0": revealStep < 5 }
         )}>
-          <h2 className="text-xl font-orbitron text-white mb-4">Mission Success</h2>
-          <p className="text-muted-foreground mb-6">
+          <h2 className={cn(typography.h3, "mb-4")}>Mission Success</h2>
+          <p className={cn(typography.body, "text-muted-foreground mb-6")}>
             The Core has been contained. Your approach has been analyzed and your results are complete.
             This comprehensive assessment reveals your unique strengths and decision-making styles.
           </p>
@@ -313,7 +313,7 @@ const ResultsScreen: React.FC = () => {
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <button 
               onClick={resetGame}
-              className="neon-button"
+              className={cn("neon-button", typography.button)}
             >
               Start New Assessment
             </button>
@@ -325,3 +325,4 @@ const ResultsScreen: React.FC = () => {
 };
 
 export default ResultsScreen;
+
