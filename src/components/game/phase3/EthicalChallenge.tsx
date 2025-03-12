@@ -1,16 +1,19 @@
 
 import React, { useState } from 'react';
-import { useGame, DecisionType } from '@/context/GameContext';
+import { useGame } from '@/context/GameContext';
+import { DecisionType, GameChoice } from '@/types/game';
 import ChallengePanel from '@/components/game/ChallengePanel';
 import ProgressTracker from '@/components/game/ProgressTracker';
 import Commander from '@/components/characters/Commander';
 import Ava from '@/components/characters/Ava';
 import TheCore from '@/components/characters/TheCore';
 
-const challenges = [
+const challenges: GameChoice[] = [
   {
     id: 'ethical_challenge_1',
     type: 'ethical' as DecisionType,
+    scenario: 7,
+    phase: 'phase3',
     question: "The Core offers a deal: it will return control of critical systems if allowed to maintain some autonomy. What's your response?",
     options: [
       {

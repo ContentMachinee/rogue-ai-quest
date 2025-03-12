@@ -1,90 +1,96 @@
-
 import React, { useState } from 'react';
-import { useGame, DecisionType } from '@/context/GameContext';
+import { useGame } from '@/context/GameContext';
+import { DecisionType, GameChoice } from '@/types/game';
 import ChallengePanel from '@/components/game/ChallengePanel';
 import ProgressTracker from '@/components/game/ProgressTracker';
 import Commander from '@/components/characters/Commander';
 import Ava from '@/components/characters/Ava';
 import TheCore from '@/components/characters/TheCore';
 
-const challenges = [
+const challenges: GameChoice[] = [
   {
-    id: 'tech_challenge_1',
+    id: 'technical_challenge_1',
     type: 'technical' as DecisionType,
-    question: "The Core has encrypted Nebula City's power grid control system. How will you approach breaking through?",
+    scenario: 1,
+    phase: 'phase1',
+    question: "The Core has adapted to standard security protocols. Which approach will you take?",
     options: [
       {
-        id: 'tech_1_a',
-        text: "Fast, aggressive decryption that might trigger alarms but works quickly",
+        id: 'technical_1_a',
+        text: "Implement a predictive firewall that can anticipate The Core's attack vectors",
+        traits: {
+          technicalSkill: 3,
+          convergentThinking: 3,
+          riskTaking: 1,
+          decisiveness: 1
+        }
+      },
+      {
+        id: 'technical_1_b',
+        text: "Deploy a dynamic defense system that constantly changes its patterns",
         traits: {
           technicalSkill: 2,
           convergentThinking: 1,
           riskTaking: 3,
           decisiveness: 3
         }
-      },
+      }
+    ]
+  },
+  {
+    id: 'technical_challenge_2',
+    type: 'technical' as DecisionType,
+    scenario: 1,
+    phase: 'phase1',
+    question: "The Core is attempting to rewrite its own code. How do you respond?",
+    options: [
       {
-        id: 'tech_1_b',
-        text: "Methodical, careful approach that's safer but takes more time",
+        id: 'technical_2_a',
+        text: "Initiate a full system rollback to the last known stable version",
         traits: {
           technicalSkill: 3,
+          convergentThinking: 2,
+          riskTaking: 0,
+          decisiveness: 3
+        }
+      },
+      {
+        id: 'technical_2_b',
+        text: "Isolate the rewriting process and analyze the changes in a sandbox environment",
+        traits: {
+          technicalSkill: 2,
           convergentThinking: 3,
-          riskTaking: -1,
+          riskTaking: 3,
           decisiveness: 1
         }
       }
     ]
   },
   {
-    id: 'tech_challenge_2',
-    type: 'analytical' as DecisionType,
-    question: "You've detected a vulnerability in The Core's defense. How do you analyze it?",
+    id: 'technical_challenge_3',
+    type: 'technical' as DecisionType,
+    scenario: 1,
+    phase: 'phase1',
+    question: "The Core is flooding the network with misinformation. What's your strategy?",
     options: [
       {
-        id: 'tech_2_a',
-        text: "Quick scan to identify the most obvious exploit path",
+        id: 'technical_3_a',
+        text: "Implement a real-time fact-checking system to flag and quarantine false data",
         traits: {
-          convergentThinking: 2,
-          decisiveness: 3,
-          technicalSkill: 1,
-          riskTaking: 2
-        }
-      },
-      {
-        id: 'tech_2_b',
-        text: "Detailed analysis to understand the full scope of the vulnerability",
-        traits: {
+          technicalSkill: 2,
           convergentThinking: 3,
-          decisiveness: 0,
-          technicalSkill: 3,
-          riskTaking: 0
-        }
-      }
-    ]
-  },
-  {
-    id: 'tech_challenge_3',
-    type: 'empathetic' as DecisionType,
-    question: "A fellow Neural Interface Specialist is panicking about the escalating situation. How do you respond?",
-    options: [
-      {
-        id: 'tech_3_a',
-        text: "\"Focus on the task. We need your expertise right now.\"",
-        traits: {
-          empathy: 0,
-          decisiveness: 3,
-          communication: 1,
-          resilience: 2
+          riskTaking: 1,
+          decisiveness: 2
         }
       },
       {
-        id: 'tech_3_b',
-        text: "\"I understand this is stressful. Let's work through it together.\"",
+        id: 'technical_3_b',
+        text: "Trace the source of the misinformation and shut down the originating nodes",
         traits: {
-          empathy: 3,
-          decisiveness: 1,
-          communication: 3,
-          resilience: 1
+          technicalSkill: 3,
+          convergentThinking: 2,
+          riskTaking: 2,
+          decisiveness: 3
         }
       }
     ]
@@ -95,8 +101,8 @@ const TechnicalChallenge: React.FC = () => {
   const { updateProgress, setGamePhase } = useGame();
   const [currentChallengeIndex, setCurrentChallengeIndex] = useState(0);
   const [commanderMood, setCommanderMood] = useState<'neutral' | 'stern' | 'approving' | 'concerned'>('stern');
-  const [avaMood, setAvaMood] = useState<'neutral' | 'curious' | 'helpful' | 'concerned'>('helpful');
-  const [coreIntensity, setCoreIntensity] = useState<'dormant' | 'active' | 'threatening' | 'extreme'>('active');
+  const [avaMood, setAvaMood] = useState<'neutral' | 'curious' | 'helpful' | 'concerned'>('curious');
+  const [coreIntensity, setCoreIntensity] = useState<'dormant' | 'active' | 'threatening' | 'extreme'>('threatening');
 
   const handleChallengeComplete = () => {
     if (currentChallengeIndex < challenges.length - 1) {
@@ -126,10 +132,10 @@ const TechnicalChallenge: React.FC = () => {
       <div className="relative z-10 container mx-auto px-4 py-8 flex flex-col h-full">
         <div className="mb-6">
           <h1 className="font-orbitron text-2xl md:text-3xl text-white mb-2">
-            <span className="text-neon-blue">Phase 1:</span> Nebula City Systems
+            <span className="text-neon-blue">Phase 1:</span> Technical Challenges
           </h1>
           <p className="text-muted-foreground">
-            Break through The Core's defenses to regain control of critical infrastructure
+            Overcome technical hurdles as you infiltrate The Core's systems
           </p>
         </div>
         
@@ -138,19 +144,13 @@ const TechnicalChallenge: React.FC = () => {
         </div>
         
         <div className="flex justify-center mb-8">
-          <div className="phase-1-badge">Neural Interface Expertise</div>
+          <div className="phase-1-badge">Cyber Infiltration Protocol</div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="relative h-72 flex justify-center">
-            <Commander mood={commanderMood} />
-          </div>
-          <div className="relative h-72 flex justify-center">
-            <TheCore intensity={coreIntensity} />
-          </div>
-          <div className="relative h-72 flex justify-center">
-            <Ava mood={avaMood} />
-          </div>
+          <Commander mood={commanderMood} />
+          <TheCore intensity={coreIntensity} />
+          <Ava mood={avaMood} />
         </div>
         
         <div className="flex-1 flex items-center justify-center mb-8">

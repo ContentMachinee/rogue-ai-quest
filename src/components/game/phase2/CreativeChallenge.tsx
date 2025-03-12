@@ -1,16 +1,19 @@
 
 import React, { useState } from 'react';
-import { useGame, DecisionType } from '@/context/GameContext';
+import { useGame } from '@/context/GameContext';
+import { DecisionType, GameChoice } from '@/types/game';
 import ChallengePanel from '@/components/game/ChallengePanel';
 import ProgressTracker from '@/components/game/ProgressTracker';
 import Commander from '@/components/characters/Commander';
 import Ava from '@/components/characters/Ava';
 import TheCore from '@/components/characters/TheCore';
 
-const challenges = [
+const challenges: GameChoice[] = [
   {
     id: 'creative_challenge_1',
     type: 'creative' as DecisionType,
+    scenario: 4,
+    phase: 'phase2',
     question: "The Core is adapting to standard countermeasures. Which approach will you take?",
     options: [
       {
