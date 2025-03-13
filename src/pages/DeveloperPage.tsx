@@ -17,7 +17,8 @@ import {
   EyeIcon,
   PlayIcon,
   SaveIcon,
-  LogOutIcon 
+  LogOutIcon,
+  KeyIcon
 } from 'lucide-react';
 import ComponentLibrary from '@/components/developer/ComponentLibrary';
 import CanvasArea from '@/components/developer/CanvasArea';
@@ -27,6 +28,7 @@ import PreviewPanel from '@/components/developer/PreviewPanel';
 const DeveloperPage = () => {
   const navigate = useNavigate();
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [developerID, setDeveloperID] = useState<string | null>(null);
   const [selectedComponent, setSelectedComponent] = useState<any>(null);
   const [canvasItems, setCanvasItems] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<'components' | 'functions'>('components');
@@ -38,6 +40,12 @@ const DeveloperPage = () => {
       toast.error('Developer authentication required');
       navigate('/developer');
       return;
+    }
+    
+    // Get developer ID if available
+    const storedDevID = localStorage.getItem('devID');
+    if (storedDevID) {
+      setDeveloperID(storedDevID);
     }
     
     setIsAuthorized(true);
@@ -94,6 +102,13 @@ const DeveloperPage = () => {
             </div>
             
             <div className="flex items-center space-x-4">
+              {developerID && (
+                <div className="bg-gray-900/80 border border-purple-500/30 rounded-md px-3 py-1 flex items-center">
+                  <KeyIcon className="h-4 w-4 text-purple-400 mr-2" />
+                  <span className="text-xs text-white/70 font-mono">{developerID}</span>
+                </div>
+              )}
+              
               <Button 
                 variant="outline" 
                 size="sm"
