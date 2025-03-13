@@ -7,7 +7,6 @@ import {
   FileTextIcon, 
   TerminalIcon, 
   BrainCircuitIcon,
-
   SplitIcon,
   BarChart4Icon,
   BadgeIcon
@@ -47,19 +46,19 @@ const CanvasArea = ({
   }));
 
   // Get icon for component type
-  const getComponentIcon = (type: string) => {
+  const getComponentIcon = (type: string, componentItem: any) => {
     switch (type) {
       case 'scenario': return <FileTextIcon className="h-4 w-4" />;
       case 'question': 
-        if (item.template?.question_type === 'coding_challenge') {
+        if (componentItem.template?.question_type === 'coding_challenge') {
           return <TerminalIcon className="h-4 w-4" />;
-        } else if (item.template?.question_type === 'ai_ml_task') {
+        } else if (componentItem.template?.question_type === 'ai_ml_task') {
           return <BrainCircuitIcon className="h-4 w-4" />;
         } else {
           return <SplitIcon className="h-4 w-4" />;
         }
       case 'ui':
-        if (item.template?.type === 'radar-chart') {
+        if (componentItem.template?.type === 'radar-chart') {
           return <BarChart4Icon className="h-4 w-4" />;
         } else {
           return <BadgeIcon className="h-4 w-4" />;
@@ -121,7 +120,7 @@ const CanvasArea = ({
               "flex items-center justify-center w-8 h-8 rounded-full mr-2",
               selectedId === item.id ? "bg-purple-950 text-purple-400" : "bg-gray-800 text-white/70"
             )}>
-              {getComponentIcon(item.type)}
+              {getComponentIcon(item.type, item)}
             </div>
             <div>
               <p className={cn(typography.bodySmall, "font-medium")}>{item.name}</p>
