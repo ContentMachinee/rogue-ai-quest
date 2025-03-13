@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { useGame } from '@/context/GameContext';
@@ -29,13 +28,11 @@ const ChallengePanel: React.FC<ChallengePanelProps> = ({
   const isCodeChallenge = hasCodeChallenge(challenge);
 
   useEffect(() => {
-    // Reset state when challenge changes
     setSelectedOption(null);
     setCodeInput(challenge.codeTemplate || '');
     setCodeOutput('');
     setShowFeedback(false);
     
-    // Update time spent every second
     const timer = setInterval(() => {
       setTimeSpent(Math.floor((Date.now() - startTime) / 1000));
     }, 1000);
@@ -54,14 +51,12 @@ const ChallengePanel: React.FC<ChallengePanelProps> = ({
   const handleSubmit = () => {
     if (isSubmitting) return;
     
-    // For code challenges, check if code is provided
     if (isCodeChallenge && !codeInput.trim()) {
       setFeedbackMessage("Please enter your code solution.");
       setShowFeedback(true);
       return;
     }
     
-    // For multiple choice, check if an option is selected
     if (!isCodeChallenge && !selectedOption) {
       setFeedbackMessage("Please select an option.");
       setShowFeedback(true);
@@ -70,33 +65,26 @@ const ChallengePanel: React.FC<ChallengePanelProps> = ({
     
     setIsSubmitting(true);
     
-    // Calculate total time spent in milliseconds
     const totalTimeMs = Date.now() - startTime;
     
-    // Record the choice
     const choiceId = isCodeChallenge ? 'code_solution' : selectedOption!;
     recordChoice(challenge.id, choiceId, totalTimeMs);
     
-    // Handle code challenge simulation
     if (isCodeChallenge) {
       setFeedbackMessage("Evaluating your code solution...");
       
-      // Simulate code execution/evaluation
       setTimeout(() => {
-        // Simple simulation of code output
         const simulatedOutput = "Function executed successfully";
         setCodeOutput(simulatedOutput);
         
         setFeedbackMessage("Code evaluation complete!");
         
-        // Delay completion to give user time to see the result
         setTimeout(() => {
           setIsSubmitting(false);
           onComplete();
         }, 1500);
       }, 1000);
     } else {
-      // Generate feedback based on choice type
       const selectedOptionObj = challenge.options.find(opt => opt.id === selectedOption);
       
       switch (challenge.type) {
@@ -121,7 +109,6 @@ const ChallengePanel: React.FC<ChallengePanelProps> = ({
       
       setShowFeedback(true);
       
-      // Delay to show processing and feedback
       setTimeout(() => {
         setIsSubmitting(false);
         onComplete();
@@ -172,7 +159,7 @@ const ChallengePanel: React.FC<ChallengePanelProps> = ({
           
           {codeOutput && (
             <div className="bg-black/60 rounded-lg border border-gray-700 p-4">
-              <div className={cn(typography.subtitle, "text-neon-blue mb-2")}>Output:</div>
+              <div className={cn(typography.h4, "text-neon-blue mb-2")}>Output:</div>
               <pre className="text-white font-mono text-sm whitespace-pre-wrap">{codeOutput}</pre>
             </div>
           )}

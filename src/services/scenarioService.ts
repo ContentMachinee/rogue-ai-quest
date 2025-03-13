@@ -129,7 +129,7 @@ export const fetchScenarioById = async (scenarioId: number): Promise<DbScenario>
 /**
  * Inserts a batch of questions for a scenario
  */
-export const insertScenarioQuestions = async (questions: Partial<DbScenarioQuestion>[]): Promise<void> => {
+export const insertScenarioQuestions = async (questions: Omit<DbScenarioQuestion, 'created_at' | 'id'>[]): Promise<void> => {
   const { error } = await supabase
     .from('scenario_questions')
     .insert(questions);
