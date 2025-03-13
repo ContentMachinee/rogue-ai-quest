@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { DbScenario, DbScenarioQuestion, ScenarioInfo, ScenarioId } from "@/types/game";
+import { DbScenario, DbScenarioQuestion, ScenarioInfo, ScenarioId, GameChoice, DecisionType } from "@/types/game";
 
 /**
  * Fetches all scenarios from the database
@@ -27,9 +27,9 @@ export const fetchAllScenarios = async (): Promise<ScenarioInfo[]> => {
 };
 
 /**
- * Fetches questions for a specific scenario
+ * Fetches questions for a specific scenario and formats them as GameChoice objects
  */
-export const fetchScenarioQuestions = async (scenarioId: number): Promise<DbScenarioQuestion[]> => {
+export const fetchScenarioQuestions = async (scenarioId: number): Promise<GameChoice[]> => {
   const { data, error } = await supabase
     .from('scenario_questions')
     .select('*')
@@ -41,7 +41,53 @@ export const fetchScenarioQuestions = async (scenarioId: number): Promise<DbScen
     throw new Error('Failed to fetch scenario questions');
   }
   
-  return data as DbScenarioQuestion[];
+  // Map the database questions to the GameChoice format
+  const questions: GameChoice[] = (data as DbScenarioQuestion[]).map(question => {
+    // Map question_type to DecisionType
+    const typeMap: Record<string, DecisionType> = {
+      'coding_challenge': 'technical',
+      'ai_ml_task': 'technical',
+      'choice': 'analytical',
+      'behavioral_metric': 'analytical',
+      'ethical_choice': 'ethical',
+      'hybrid': 'technical'
+    };
+    
+    // Ensure options is properly formatted
+    let formattedOptions = [];
+    if (question.options && typeof question.options === 'object') {
+      if (Array.isArray(question.options)) {
+        formattedOptions = question.options.map((opt: any, index: number) => ({
+          id: opt.id || `option_${index}`,
+          text: opt.text || String(opt),
+          traits: opt.traits || {}
+        }));
+      } else {
+        formattedOptions = Object.entries(question.options).map(([key, value]) => ({
+          id: key,
+          text: typeof value === 'string' ? value : String(value),
+          traits: {}
+        }));
+      }
+    } else {
+      // Default options if none provided
+      formattedOptions = [
+        { id: 'default_opt_1', text: 'Continue', traits: {} },
+        { id: 'default_opt_2', text: 'Skip', traits: {} }
+      ];
+    }
+    
+    return {
+      id: question.id,
+      type: typeMap[question.question_type] || 'technical',
+      question: question.question_text,
+      scenario: question.scenario_id,
+      phase: 'infiltration',
+      options: formattedOptions
+    };
+  });
+  
+  return questions;
 };
 
 /**

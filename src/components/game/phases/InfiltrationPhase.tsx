@@ -7,7 +7,7 @@ import Commander from '@/components/characters/Commander';
 import Ava from '@/components/characters/Ava';
 import TheCore from '@/components/characters/TheCore';
 import { infiltrationScenarios } from '@/data/scenarios/infiltrationScenarios';
-import { GameChoice, ScenarioId } from '@/types/game';
+import { GameChoice, ScenarioId, DecisionType } from '@/types/game';
 import { toast } from 'sonner';
 import { typography } from '@/lib/typography';
 import { cn } from '@/lib/utils';
@@ -46,15 +46,53 @@ const InfiltrationPhase: React.FC<InfiltrationPhaseProps> = ({ scenarioId }) => 
         } else {
           console.log('Using database questions for scenario', currentId);
           // Format Supabase data to match GameChoice structure
-          const formattedQuestions: GameChoice[] = data.map(q => ({
-            id: q.id,
-            type: q.question_type.includes('ethical') ? 'ethical' : 
-                 q.question_type.includes('coding') ? 'technical' : 'analytical',
-            question: q.question_text,
-            scenario: q.scenario_id,
-            phase: 'infiltration',
-            options: q.options || []
-          }));
+          const formattedQuestions: GameChoice[] = data.map(q => {
+            // Convert the question_type to DecisionType
+            const questionTypeMap: Record<string, DecisionType> = {
+              'coding_challenge': 'technical',
+              'ai_ml_task': 'technical',
+              'choice': 'analytical',
+              'behavioral_metric': 'analytical',
+              'ethical_choice': 'ethical',
+              'hybrid': 'technical'
+            };
+            
+            // Ensure options is properly formatted as an array of {id, text, traits}
+            let formattedOptions = [];
+            
+            if (q.options && typeof q.options === 'object') {
+              // If it's an array, map it properly
+              if (Array.isArray(q.options)) {
+                formattedOptions = q.options.map((opt: any, index: number) => ({
+                  id: opt.id || `option_${index}`,
+                  text: opt.text || String(opt),
+                  traits: opt.traits || {}
+                }));
+              } else {
+                // If it's an object but not an array, convert it
+                formattedOptions = Object.entries(q.options).map(([key, value]) => ({
+                  id: key,
+                  text: typeof value === 'string' ? value : String(value),
+                  traits: {}
+                }));
+              }
+            } else if (q.options === null) {
+              // Default options if none provided
+              formattedOptions = [
+                { id: 'default_opt_1', text: 'Continue', traits: {} },
+                { id: 'default_opt_2', text: 'Skip', traits: {} }
+              ];
+            }
+            
+            return {
+              id: q.id,
+              type: questionTypeMap[q.question_type] || 'technical',
+              question: q.question_text,
+              scenario: q.scenario_id,
+              phase: 'infiltration',
+              options: formattedOptions
+            };
+          });
           
           setScenarioQuestions(formattedQuestions);
         }
