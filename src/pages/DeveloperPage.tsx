@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DndProvider } from 'react-dnd';
@@ -46,9 +45,13 @@ const DeveloperPage = () => {
     const storedDevID = localStorage.getItem('devID');
     if (storedDevID) {
       setDeveloperID(storedDevID);
+    } else {
+      // Set default universal ID if none exists
+      setDeveloperID('DEV_DEEP_SEED_001');
     }
     
     setIsAuthorized(true);
+    toast.success('Developer mode activated');
   }, [navigate]);
 
   const handleLogout = () => {
