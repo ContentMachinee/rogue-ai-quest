@@ -79,6 +79,8 @@ export interface GameChoice {
     text: string;
     traits: Partial<UserMetrics>;
   }[];
+  codeTemplate?: string;
+  expectedOutput?: string;
   userChoice?: string;
   timeSpent?: number;
 }

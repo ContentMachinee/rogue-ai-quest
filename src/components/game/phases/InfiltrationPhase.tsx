@@ -11,7 +11,7 @@ import { GameChoice, ScenarioId, DecisionType } from '@/types/game';
 import { toast } from 'sonner';
 import { typography } from '@/lib/typography';
 import { cn } from '@/lib/utils';
-import { supabase } from "@/integrations/supabase/client";
+import { fetchScenarioQuestions } from '@/services/scenarioService';
 
 interface InfiltrationPhaseProps {
   scenarioId?: ScenarioId;
@@ -25,6 +25,7 @@ const InfiltrationPhase: React.FC<InfiltrationPhaseProps> = ({ scenarioId }) => 
   const [coreIntensity, setCoreIntensity] = useState<'dormant' | 'active' | 'threatening' | 'extreme'>('threatening');
   const [loading, setLoading] = useState(true);
   const [scenarioQuestions, setScenarioQuestions] = useState<GameChoice[]>([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   // Fetch questions for the current scenario from Supabase
   useEffect(() => {
@@ -33,68 +34,16 @@ const InfiltrationPhase: React.FC<InfiltrationPhaseProps> = ({ scenarioId }) => 
         setLoading(true);
         const currentId = scenarioId || infiltrationScenarios[currentScenarioIndex].scenario;
         
-        // Attempt to fetch from Supabase
-        const { data, error } = await supabase
-          .from('scenario_questions')
-          .select('*')
-          .eq('scenario_id', currentId);
+        // Fetch questions from Supabase
+        const questions = await fetchScenarioQuestions(currentId);
         
-        if (error || !data || data.length === 0) {
+        if (questions && questions.length > 0) {
+          console.log('Using database questions for scenario', currentId, questions);
+          setScenarioQuestions(questions);
+        } else {
           console.log('Using fallback questions for scenario', currentId);
           // Use fallback hardcoded questions
           setScenarioQuestions(infiltrationScenarios.filter(s => s.scenario === currentId));
-        } else {
-          console.log('Using database questions for scenario', currentId);
-          // Format Supabase data to match GameChoice structure
-          const formattedQuestions: GameChoice[] = data.map(q => {
-            // Convert the question_type to DecisionType
-            const questionTypeMap: Record<string, DecisionType> = {
-              'coding_challenge': 'technical',
-              'ai_ml_task': 'technical',
-              'choice': 'analytical',
-              'behavioral_metric': 'analytical',
-              'ethical_choice': 'ethical',
-              'hybrid': 'technical'
-            };
-            
-            // Ensure options is properly formatted as an array of {id, text, traits}
-            let formattedOptions = [];
-            
-            if (q.options && typeof q.options === 'object') {
-              // If it's an array, map it properly
-              if (Array.isArray(q.options)) {
-                formattedOptions = q.options.map((opt: any, index: number) => ({
-                  id: opt.id || `option_${index}`,
-                  text: opt.text || String(opt),
-                  traits: opt.traits || {}
-                }));
-              } else {
-                // If it's an object but not an array, convert it
-                formattedOptions = Object.entries(q.options).map(([key, value]) => ({
-                  id: key,
-                  text: typeof value === 'string' ? value : String(value),
-                  traits: {}
-                }));
-              }
-            } else if (q.options === null) {
-              // Default options if none provided
-              formattedOptions = [
-                { id: 'default_opt_1', text: 'Continue', traits: {} },
-                { id: 'default_opt_2', text: 'Skip', traits: {} }
-              ];
-            }
-            
-            return {
-              id: q.id,
-              type: questionTypeMap[q.question_type] || 'technical',
-              question: q.question_text,
-              scenario: q.scenario_id,
-              phase: 'infiltration',
-              options: formattedOptions
-            };
-          });
-          
-          setScenarioQuestions(formattedQuestions);
         }
       } catch (err) {
         console.error('Error fetching questions:', err);
@@ -124,32 +73,38 @@ const InfiltrationPhase: React.FC<InfiltrationPhaseProps> = ({ scenarioId }) => 
     const currentScenario = scenarioQuestions.length > 0 ? 
       scenarioQuestions[0] : infiltrationScenarios[currentScenarioIndex];
     
-    // Complete the current scenario in the game context
-    if (currentScenario) {
-      completeScenario(currentScenario.scenario as ScenarioId);
-      toast.success(`Completed: ${gameData.scenarios.find(s => s.id === currentScenario.scenario)?.name || 'Scenario'}`);
-    }
-    
-    // Determine if we need to move to the next scenario within this phase or to the next phase
-    if (currentScenarioIndex < infiltrationScenarios.length - 1) {
-      // Move to the next scenario within this phase
-      setCurrentScenarioIndex(prev => prev + 1);
-      updateProgress(Math.floor((currentScenarioIndex + 1) / infiltrationScenarios.length * 20));
-      
-      // Update character moods for variety
-      setCommanderMood(['neutral', 'stern', 'approving', 'concerned'][Math.floor(Math.random() * 4)] as any);
-      setAvaMood(['neutral', 'curious', 'helpful', 'concerned'][Math.floor(Math.random() * 4)] as any);
-      setCoreIntensity(['active', 'threatening', 'threatening', 'extreme'][Math.floor(Math.random() * 4)] as any);
+    if (currentQuestionIndex < scenarioQuestions.length - 1) {
+      // Move to the next question in the current scenario
+      setCurrentQuestionIndex(prev => prev + 1);
     } else {
-      // We've completed all scenarios in this phase, move to systems phase
-      updateProgress(20);
-      setGamePhase('systems');
+      // Complete the current scenario in the game context
+      if (currentScenario) {
+        completeScenario(currentScenario.scenario as ScenarioId);
+        toast.success(`Completed: ${gameData.scenarios.find(s => s.id === currentScenario.scenario)?.name || 'Scenario'}`);
+      }
+      
+      // Determine if we need to move to the next scenario within this phase or to the next phase
+      if (currentScenarioIndex < infiltrationScenarios.length - 1) {
+        // Move to the next scenario within this phase
+        setCurrentScenarioIndex(prev => prev + 1);
+        setCurrentQuestionIndex(0); // Reset question index for the new scenario
+        updateProgress(Math.floor((currentScenarioIndex + 1) / infiltrationScenarios.length * 20));
+        
+        // Update character moods for variety
+        setCommanderMood(['neutral', 'stern', 'approving', 'concerned'][Math.floor(Math.random() * 4)] as any);
+        setAvaMood(['neutral', 'curious', 'helpful', 'concerned'][Math.floor(Math.random() * 4)] as any);
+        setCoreIntensity(['active', 'threatening', 'threatening', 'extreme'][Math.floor(Math.random() * 4)] as any);
+      } else {
+        // We've completed all scenarios in this phase, move to systems phase
+        updateProgress(20);
+        setGamePhase('systems');
+      }
     }
   };
 
   // Use database questions if available, otherwise fallback to hardcoded
-  const currentScenario = scenarioQuestions.length > 0 ? 
-    scenarioQuestions[0] : infiltrationScenarios[currentScenarioIndex];
+  const currentQuestion = scenarioQuestions.length > 0 ? 
+    scenarioQuestions[currentQuestionIndex] : infiltrationScenarios[currentScenarioIndex];
 
   if (loading) {
     return (
@@ -182,7 +137,12 @@ const InfiltrationPhase: React.FC<InfiltrationPhaseProps> = ({ scenarioId }) => 
         
         <div className="flex justify-center mb-8">
           <div className="phase-1-badge">
-            {gameData.scenarios.find(s => s.id === currentScenario.scenario)?.name || 'Infiltration Protocol'}
+            {gameData.scenarios.find(s => s.id === currentQuestion.scenario)?.name || 'Infiltration Protocol'}
+            {scenarioQuestions.length > 1 && (
+              <span className="ml-2 text-sm opacity-70">
+                Question {currentQuestionIndex + 1}/{scenarioQuestions.length}
+              </span>
+            )}
           </div>
         </div>
         
@@ -194,7 +154,7 @@ const InfiltrationPhase: React.FC<InfiltrationPhaseProps> = ({ scenarioId }) => 
         
         <div className="flex-1 flex items-center justify-center mb-8">
           <ChallengePanel 
-            challenge={currentScenario} 
+            challenge={currentQuestion} 
             onComplete={handleChallengeComplete}
           />
         </div>
