@@ -9,7 +9,71 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      scenario_questions: {
+        Row: {
+          code_template: string | null
+          created_at: string
+          expected_output: string | null
+          id: string
+          metrics: Json | null
+          options: Json | null
+          question_text: string
+          question_type: Database["public"]["Enums"]["question_type"]
+          scenario_id: number
+        }
+        Insert: {
+          code_template?: string | null
+          created_at?: string
+          expected_output?: string | null
+          id?: string
+          metrics?: Json | null
+          options?: Json | null
+          question_text: string
+          question_type: Database["public"]["Enums"]["question_type"]
+          scenario_id: number
+        }
+        Update: {
+          code_template?: string | null
+          created_at?: string
+          expected_output?: string | null
+          id?: string
+          metrics?: Json | null
+          options?: Json | null
+          question_text?: string
+          question_type?: Database["public"]["Enums"]["question_type"]
+          scenario_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_scenario_id"
+            columns: ["scenario_id"]
+            isOneToOne: false
+            referencedRelation: "scenarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scenarios: {
+        Row: {
+          description: string
+          id: number
+          name: string
+          phase: string
+        }
+        Insert: {
+          description: string
+          id: number
+          name: string
+          phase: string
+        }
+        Update: {
+          description?: string
+          id?: number
+          name?: string
+          phase?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +82,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      question_type:
+        | "coding_challenge"
+        | "ai_ml_task"
+        | "choice"
+        | "behavioral_metric"
+        | "ethical_choice"
+        | "hybrid"
     }
     CompositeTypes: {
       [_ in never]: never

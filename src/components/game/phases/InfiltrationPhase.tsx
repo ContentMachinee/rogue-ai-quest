@@ -11,6 +11,7 @@ import { GameChoice, ScenarioId } from '@/types/game';
 import { toast } from 'sonner';
 import { typography } from '@/lib/typography';
 import { cn } from '@/lib/utils';
+import { supabase } from "@/integrations/supabase/client";
 
 interface InfiltrationPhaseProps {
   scenarioId?: ScenarioId;
@@ -22,6 +23,53 @@ const InfiltrationPhase: React.FC<InfiltrationPhaseProps> = ({ scenarioId }) => 
   const [commanderMood, setCommanderMood] = useState<'neutral' | 'stern' | 'approving' | 'concerned'>('stern');
   const [avaMood, setAvaMood] = useState<'neutral' | 'curious' | 'helpful' | 'concerned'>('helpful');
   const [coreIntensity, setCoreIntensity] = useState<'dormant' | 'active' | 'threatening' | 'extreme'>('threatening');
+  const [loading, setLoading] = useState(true);
+  const [scenarioQuestions, setScenarioQuestions] = useState<GameChoice[]>([]);
+
+  // Fetch questions for the current scenario from Supabase
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        setLoading(true);
+        const currentId = scenarioId || infiltrationScenarios[currentScenarioIndex].scenario;
+        
+        // Attempt to fetch from Supabase
+        const { data, error } = await supabase
+          .from('scenario_questions')
+          .select('*')
+          .eq('scenario_id', currentId);
+        
+        if (error || !data || data.length === 0) {
+          console.log('Using fallback questions for scenario', currentId);
+          // Use fallback hardcoded questions
+          setScenarioQuestions(infiltrationScenarios.filter(s => s.scenario === currentId));
+        } else {
+          console.log('Using database questions for scenario', currentId);
+          // Format Supabase data to match GameChoice structure
+          const formattedQuestions: GameChoice[] = data.map(q => ({
+            id: q.id,
+            type: q.question_type.includes('ethical') ? 'ethical' : 
+                 q.question_type.includes('coding') ? 'technical' : 'analytical',
+            question: q.question_text,
+            scenario: q.scenario_id,
+            phase: 'infiltration',
+            options: q.options || []
+          }));
+          
+          setScenarioQuestions(formattedQuestions);
+        }
+      } catch (err) {
+        console.error('Error fetching questions:', err);
+        // Fallback to hardcoded questions
+        const currentId = scenarioId || infiltrationScenarios[currentScenarioIndex].scenario;
+        setScenarioQuestions(infiltrationScenarios.filter(s => s.scenario === currentId));
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchQuestions();
+  }, [scenarioId, currentScenarioIndex]);
 
   // Find the correct scenario to display based on the scenarioId prop
   useEffect(() => {
@@ -35,7 +83,8 @@ const InfiltrationPhase: React.FC<InfiltrationPhaseProps> = ({ scenarioId }) => 
 
   const handleChallengeComplete = () => {
     // Get the current scenario
-    const currentScenario = infiltrationScenarios[currentScenarioIndex];
+    const currentScenario = scenarioQuestions.length > 0 ? 
+      scenarioQuestions[0] : infiltrationScenarios[currentScenarioIndex];
     
     // Complete the current scenario in the game context
     if (currentScenario) {
@@ -60,7 +109,20 @@ const InfiltrationPhase: React.FC<InfiltrationPhaseProps> = ({ scenarioId }) => 
     }
   };
 
-  const currentScenario = infiltrationScenarios[currentScenarioIndex];
+  // Use database questions if available, otherwise fallback to hardcoded
+  const currentScenario = scenarioQuestions.length > 0 ? 
+    scenarioQuestions[0] : infiltrationScenarios[currentScenarioIndex];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-neon-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className={typography.h4}>Loading scenario...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">

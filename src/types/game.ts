@@ -5,6 +5,8 @@ export type ScenarioId = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 |
 
 export type DecisionType = 'technical' | 'analytical' | 'ethical' | 'creative' | 'empathetic' | 'behavioral';
 
+export type QuestionType = 'coding_challenge' | 'ai_ml_task' | 'choice' | 'behavioral_metric' | 'ethical_choice' | 'hybrid';
+
 export interface GameScore {
   points: number;
   badges: string[];
@@ -92,4 +94,24 @@ export interface GameData {
   startTime?: Date;
   endTime?: Date;
   profile?: UserProfile;
+}
+
+// Database types for Supabase
+export interface DbScenario {
+  id: number;
+  name: string;
+  phase: string;
+  description: string;
+}
+
+export interface DbScenarioQuestion {
+  id: string;
+  scenario_id: number;
+  question_type: QuestionType;
+  question_text: string;
+  options: any;
+  code_template?: string;
+  expected_output?: string;
+  metrics: Partial<UserMetrics>;
+  created_at: string;
 }

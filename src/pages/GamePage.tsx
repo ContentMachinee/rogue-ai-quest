@@ -4,9 +4,11 @@ import GameHub from '@/components/game/GameHub';
 import { useGame } from '@/context/GameContext';
 import { toast } from 'sonner';
 import { RocketIcon, ShieldIcon, BrainIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { typography } from '@/lib/typography';
 
 const GamePage = () => {
-  const { gameData, setGamePhase } = useGame();
+  const { gameData, setGamePhase, fetchingScenarios } = useGame();
 
   useEffect(() => {
     // Initialize the game if it's not already started
@@ -14,6 +16,25 @@ const GamePage = () => {
       toast.info("Beginning Nebula City security protocols...");
     }
   }, [gameData.currentPhase]);
+
+  if (fetchingScenarios) {
+    return (
+      <div className="min-h-screen starry-bg flex items-center justify-center p-4 overflow-hidden relative">
+        <div className="text-center z-10">
+          <div className="w-16 h-16 border-4 border-neon-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <h2 className={cn(typography.h3, "mb-2")}>Initializing Game Data</h2>
+          <p className={typography.bodySmall}>Connecting to Nebula City's mainframe...</p>
+        </div>
+        
+        {/* Background elements */}
+        <div className="absolute inset-0 z-0">
+          <div className="data-stream left-1/4 h-full w-px bg-gradient-to-b from-transparent via-neon-blue/30 to-transparent"></div>
+          <div className="data-stream left-2/3 h-full w-px bg-gradient-to-b from-transparent via-neon-purple/30 to-transparent"></div>
+          <div className="absolute inset-0 bg-circuit-pattern opacity-10"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen starry-bg flex items-center justify-center p-4 overflow-hidden relative">

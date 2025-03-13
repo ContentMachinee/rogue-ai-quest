@@ -10,6 +10,8 @@ import {
   ScenarioInfo,
   ScenarioId
 } from '@/types/game';
+import { fetchAllScenarios } from '@/services/scenarioService';
+import { toast } from 'sonner';
 
 const defaultMetrics: UserMetrics = {
   // Technical Skills
@@ -56,6 +58,7 @@ const defaultMetrics: UserMetrics = {
 };
 
 // Define all 20 scenarios with names and descriptions
+// This will be replaced with data from Supabase, but we keep it as a fallback
 const allScenarios: ScenarioInfo[] = [
   // Phase 1: Infiltration
   { id: 1, name: "Breaching the Firewall", phase: "infiltration", description: "Break through The Core's primary defenses", completed: false },
@@ -112,6 +115,7 @@ interface GameContextType {
   completeScenario: (scenarioId: ScenarioId) => void;
   resetGame: () => void;
   isLoading: boolean;
+  fetchingScenarios: boolean;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -119,7 +123,9 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [gameData, setGameData] = useState<GameData>({ ...defaultGameData });
   const [isLoading, setIsLoading] = useState(false);
+  const [fetchingScenarios, setFetchingScenarios] = useState(true);
 
+  // Load game data from localStorage
   useEffect(() => {
     const savedData = localStorage.getItem('rogue_ai_game_data');
     if (savedData) {
@@ -131,8 +137,50 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setGameData({ ...defaultGameData });
       }
     }
+    
+    // Fetch scenarios from Supabase
+    const loadScenarios = async () => {
+      try {
+        setFetchingScenarios(true);
+        const dbScenarios = await fetchAllScenarios();
+        
+        // If we have saved game data, keep the completed status
+        if (savedData) {
+          const parsedData = JSON.parse(savedData);
+          const mergedScenarios = dbScenarios.map(dbScenario => {
+            const savedScenario = parsedData.scenarios.find((s: ScenarioInfo) => s.id === dbScenario.id);
+            return {
+              ...dbScenario,
+              completed: savedScenario ? savedScenario.completed : false
+            };
+          });
+          
+          setGameData(prev => ({
+            ...prev,
+            scenarios: mergedScenarios
+          }));
+        } else {
+          // No saved data, use the fetched scenarios as is
+          setGameData(prev => ({
+            ...prev,
+            scenarios: dbScenarios
+          }));
+        }
+        
+        toast.success("Game data loaded successfully!");
+      } catch (error) {
+        console.error('Failed to fetch scenarios from Supabase:', error);
+        toast.error("Failed to load scenarios. Using fallback data.");
+        // If fetch fails, we keep using the hardcoded scenarios
+      } finally {
+        setFetchingScenarios(false);
+      }
+    };
+    
+    loadScenarios();
   }, []);
 
+  // Save game data to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('rogue_ai_game_data', JSON.stringify(gameData));
   }, [gameData]);
@@ -268,6 +316,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         completeScenario,
         resetGame,
         isLoading,
+        fetchingScenarios,
       }}
     >
       {children}
