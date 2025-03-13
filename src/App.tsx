@@ -8,6 +8,8 @@ import { GameProvider } from "./context/GameContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import GamePage from "./pages/GamePage";
+import DeveloperPage from "./pages/DeveloperPage";
+import DeveloperAuth from "./pages/DeveloperAuth";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +23,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/game" element={<GamePage />} />
+            <Route path="/developer" element={<DeveloperAuth />} />
+            <Route path="/developer/dashboard" element={<DeveloperPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
