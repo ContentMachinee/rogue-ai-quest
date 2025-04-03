@@ -19,5 +19,7 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
 
 // Type-safe helper for tables not yet in the generated types
 export const customQuery = <T = any>(table: string) => {
+  // Use 'any' to bypass TypeScript's strict checking for table names
+  // This allows us to query tables that aren't yet in the generated types
   return supabase.from(table) as any;
 };

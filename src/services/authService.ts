@@ -93,7 +93,7 @@ export const loginUser = async (data: LoginData): Promise<boolean> => {
 export const subscribeEmail = async (data: EmailSubscriptionData): Promise<boolean> => {
   try {
     // Store email subscription using customQuery helper for tables not in types
-    const { error } = await customQuery("email_subscriptions").insert({
+    const { error } = await customQuery('email_subscriptions').insert({
       name: data.name,
       email: data.email,
       subscribed_at: new Date().toISOString()

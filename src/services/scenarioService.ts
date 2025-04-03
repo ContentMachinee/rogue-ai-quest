@@ -6,7 +6,7 @@ import { DbScenario, DbScenarioQuestion, ScenarioInfo, ScenarioId, GameChoice, D
  * Fetches all scenarios from the database
  */
 export const fetchAllScenarios = async (): Promise<ScenarioInfo[]> => {
-  const { data, error } = await customQuery('scenarios')
+  const { data, error } = await customQuery<DbScenario>('scenarios')
     .select('*')
     .order('id');
   
@@ -74,7 +74,7 @@ const formatOptions = (options: any): { id: string; text: string; traits: Record
  * Fetches questions for a specific scenario and formats them as GameChoice objects
  */
 export const fetchScenarioQuestions = async (scenarioId: number): Promise<GameChoice[]> => {
-  const { data, error } = await customQuery('scenario_questions')
+  const { data, error } = await customQuery<DbScenarioQuestion>('scenario_questions')
     .select('*')
     .eq('scenario_id', scenarioId)
     .order('question_type');
@@ -110,7 +110,7 @@ export const fetchScenarioQuestions = async (scenarioId: number): Promise<GameCh
  * Fetches a single scenario by ID
  */
 export const fetchScenarioById = async (scenarioId: number): Promise<DbScenario> => {
-  const { data, error } = await customQuery('scenarios')
+  const { data, error } = await customQuery<DbScenario>('scenarios')
     .select('*')
     .eq('id', scenarioId)
     .single();
@@ -127,7 +127,7 @@ export const fetchScenarioById = async (scenarioId: number): Promise<DbScenario>
  * Inserts a batch of questions for a scenario
  */
 export const insertScenarioQuestions = async (questions: Omit<DbScenarioQuestion, 'created_at' | 'id'>[]): Promise<void> => {
-  const { error } = await customQuery('scenario_questions')
+  const { error } = await customQuery<DbScenarioQuestion>('scenario_questions')
     .insert(questions as any);
   
   if (error) {
