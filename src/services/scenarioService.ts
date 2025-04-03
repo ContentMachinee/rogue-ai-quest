@@ -1,13 +1,12 @@
 
-import { supabase } from "@/integrations/supabase/client";
+import { customQuery, supabase } from "@/integrations/supabase/client";
 import { DbScenario, DbScenarioQuestion, ScenarioInfo, ScenarioId, GameChoice, DecisionType, QuestionType } from "@/types/game";
 
 /**
  * Fetches all scenarios from the database
  */
 export const fetchAllScenarios = async (): Promise<ScenarioInfo[]> => {
-  const { data, error } = await supabase
-    .from('scenarios')
+  const { data, error } = await customQuery('scenarios')
     .select('*')
     .order('id');
   
@@ -16,8 +15,8 @@ export const fetchAllScenarios = async (): Promise<ScenarioInfo[]> => {
     throw new Error('Failed to fetch scenarios');
   }
   
-  // Convert DbScenario to ScenarioInfo
-  return (data as DbScenario[]).map(scenario => ({
+  // Convert DbScenario to ScenarioInfo with safe type casting
+  return (data as unknown as DbScenario[]).map(scenario => ({
     id: scenario.id as ScenarioId,
     name: scenario.name,
     phase: scenario.phase as any, // Convert string to GamePhase
@@ -75,8 +74,7 @@ const formatOptions = (options: any): { id: string; text: string; traits: Record
  * Fetches questions for a specific scenario and formats them as GameChoice objects
  */
 export const fetchScenarioQuestions = async (scenarioId: number): Promise<GameChoice[]> => {
-  const { data, error } = await supabase
-    .from('scenario_questions')
+  const { data, error } = await customQuery('scenario_questions')
     .select('*')
     .eq('scenario_id', scenarioId)
     .order('question_type');
@@ -91,8 +89,8 @@ export const fetchScenarioQuestions = async (scenarioId: number): Promise<GameCh
     return [];
   }
   
-  // Map the database questions to the GameChoice format
-  const questions: GameChoice[] = (data as DbScenarioQuestion[]).map(question => {
+  // Map the database questions to the GameChoice format with safe type casting
+  const questions: GameChoice[] = (data as unknown as DbScenarioQuestion[]).map(question => {
     return {
       id: question.id,
       type: mapQuestionTypeToDecisionType(question.question_type),
@@ -112,8 +110,7 @@ export const fetchScenarioQuestions = async (scenarioId: number): Promise<GameCh
  * Fetches a single scenario by ID
  */
 export const fetchScenarioById = async (scenarioId: number): Promise<DbScenario> => {
-  const { data, error } = await supabase
-    .from('scenarios')
+  const { data, error } = await customQuery('scenarios')
     .select('*')
     .eq('id', scenarioId)
     .single();
@@ -123,16 +120,15 @@ export const fetchScenarioById = async (scenarioId: number): Promise<DbScenario>
     throw new Error(`Failed to fetch scenario ${scenarioId}`);
   }
   
-  return data as DbScenario;
+  return data as unknown as DbScenario;
 };
 
 /**
  * Inserts a batch of questions for a scenario
  */
 export const insertScenarioQuestions = async (questions: Omit<DbScenarioQuestion, 'created_at' | 'id'>[]): Promise<void> => {
-  const { error } = await supabase
-    .from('scenario_questions')
-    .insert(questions);
+  const { error } = await customQuery('scenario_questions')
+    .insert(questions as any);
   
   if (error) {
     console.error('Error inserting scenario questions:', error);

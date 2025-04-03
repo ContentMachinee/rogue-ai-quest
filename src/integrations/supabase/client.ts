@@ -16,3 +16,8 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     autoRefreshToken: true,
   }
 });
+
+// Type-safe helper for tables not yet in the generated types
+export const customQuery = <T = any>(table: string) => {
+  return supabase.from(table) as any;
+};

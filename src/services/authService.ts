@@ -1,5 +1,5 @@
 
-import { supabase } from "@/integrations/supabase/client";
+import { customQuery, supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 // Interface for user signup
@@ -45,10 +45,11 @@ export const signupUser = async (data: SignupData): Promise<boolean> => {
     }
 
     // Create profile entry in users table (if needed)
+    // Using full_name instead of name to match the profiles table schema
     await supabase.from("profiles").upsert({
       id: (await supabase.auth.getUser()).data.user?.id,
-      name: data.name,
-      role: data.role,
+      full_name: data.name,
+      user_id: (await supabase.auth.getUser()).data.user?.id,
       created_at: new Date().toISOString()
     });
 
@@ -91,8 +92,8 @@ export const loginUser = async (data: LoginData): Promise<boolean> => {
  */
 export const subscribeEmail = async (data: EmailSubscriptionData): Promise<boolean> => {
   try {
-    // Store email subscription
-    const { error } = await supabase.from("email_subscriptions").insert({
+    // Store email subscription using customQuery helper for tables not in types
+    const { error } = await customQuery("email_subscriptions").insert({
       name: data.name,
       email: data.email,
       subscribed_at: new Date().toISOString()
