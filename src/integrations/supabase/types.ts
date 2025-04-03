@@ -9,353 +9,68 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      assessments: {
+      scenario_questions: {
         Row: {
-          assessment_data: Json
-          created_at: string | null
+          code_template: string | null
+          created_at: string
+          expected_output: string | null
           id: string
-          profile_id: string | null
-          score: number
-          skill_id: string | null
-          verified_by: string | null
+          metrics: Json | null
+          options: Json | null
+          question_text: string
+          question_type: Database["public"]["Enums"]["question_type"]
+          scenario_id: number
         }
         Insert: {
-          assessment_data: Json
-          created_at?: string | null
+          code_template?: string | null
+          created_at?: string
+          expected_output?: string | null
           id?: string
-          profile_id?: string | null
-          score: number
-          skill_id?: string | null
-          verified_by?: string | null
+          metrics?: Json | null
+          options?: Json | null
+          question_text: string
+          question_type: Database["public"]["Enums"]["question_type"]
+          scenario_id: number
         }
         Update: {
-          assessment_data?: Json
-          created_at?: string | null
+          code_template?: string | null
+          created_at?: string
+          expected_output?: string | null
           id?: string
-          profile_id?: string | null
-          score?: number
-          skill_id?: string | null
-          verified_by?: string | null
+          metrics?: Json | null
+          options?: Json | null
+          question_text?: string
+          question_type?: Database["public"]["Enums"]["question_type"]
+          scenario_id?: number
         }
         Relationships: [
           {
-            foreignKeyName: "assessments_profile_id_fkey"
-            columns: ["profile_id"]
+            foreignKeyName: "fk_scenario_id"
+            columns: ["scenario_id"]
             isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "assessments_skill_id_fkey"
-            columns: ["skill_id"]
-            isOneToOne: false
-            referencedRelation: "skills"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "assessments_verified_by_fkey"
-            columns: ["verified_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "scenarios"
             referencedColumns: ["id"]
           },
         ]
       }
-      contracts: {
+      scenarios: {
         Row: {
-          client_id: string | null
-          created_at: string | null
-          id: string
-          milestones: Json
-          project_id: string | null
-          status: string | null
-          talent_id: string | null
-          terms: Json
-          updated_at: string | null
-        }
-        Insert: {
-          client_id?: string | null
-          created_at?: string | null
-          id?: string
-          milestones: Json
-          project_id?: string | null
-          status?: string | null
-          talent_id?: string | null
-          terms: Json
-          updated_at?: string | null
-        }
-        Update: {
-          client_id?: string | null
-          created_at?: string | null
-          id?: string
-          milestones?: Json
-          project_id?: string | null
-          status?: string | null
-          talent_id?: string | null
-          terms?: Json
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "contracts_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "contracts_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "contracts_talent_id_fkey"
-            columns: ["talent_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      email_subscriptions: {
-        Row: {
-          email: string
-          id: string
-          name: string
-          subscribed_at: string | null
-        }
-        Insert: {
-          email: string
-          id?: string
-          name: string
-          subscribed_at?: string | null
-        }
-        Update: {
-          email?: string
-          id?: string
-          name?: string
-          subscribed_at?: string | null
-        }
-        Relationships: []
-      }
-      messages: {
-        Row: {
-          content: string
-          created_at: string | null
-          id: string
-          is_read: boolean | null
-          project_id: string | null
-          receiver_id: string | null
-          sender_id: string | null
-        }
-        Insert: {
-          content: string
-          created_at?: string | null
-          id?: string
-          is_read?: boolean | null
-          project_id?: string | null
-          receiver_id?: string | null
-          sender_id?: string | null
-        }
-        Update: {
-          content?: string
-          created_at?: string | null
-          id?: string
-          is_read?: boolean | null
-          project_id?: string | null
-          receiver_id?: string | null
-          sender_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "messages_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messages_receiver_id_fkey"
-            columns: ["receiver_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      profile_skills: {
-        Row: {
-          created_at: string | null
-          is_verified: boolean | null
-          proficiency_level: number
-          profile_id: string
-          skill_id: string
-          verification_proof: Json | null
-          verified_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          is_verified?: boolean | null
-          proficiency_level: number
-          profile_id: string
-          skill_id: string
-          verification_proof?: Json | null
-          verified_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          is_verified?: boolean | null
-          proficiency_level?: number
-          profile_id?: string
-          skill_id?: string
-          verification_proof?: Json | null
-          verified_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "profile_skills_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "profile_skills_skill_id_fkey"
-            columns: ["skill_id"]
-            isOneToOne: false
-            referencedRelation: "skills"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      profiles: {
-        Row: {
-          availability_status: string | null
-          avatar_url: string | null
-          bio: string | null
-          created_at: string | null
-          full_name: string
-          headline: string | null
-          hourly_rate: number | null
-          id: string
-          reputation_score: number | null
-          success_rate: number | null
-          total_projects: number | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          availability_status?: string | null
-          avatar_url?: string | null
-          bio?: string | null
-          created_at?: string | null
-          full_name: string
-          headline?: string | null
-          hourly_rate?: number | null
-          id?: string
-          reputation_score?: number | null
-          success_rate?: number | null
-          total_projects?: number | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          availability_status?: string | null
-          avatar_url?: string | null
-          bio?: string | null
-          created_at?: string | null
-          full_name?: string
-          headline?: string | null
-          hourly_rate?: number | null
-          id?: string
-          reputation_score?: number | null
-          success_rate?: number | null
-          total_projects?: number | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      projects: {
-        Row: {
-          budget_range: Json
-          client_id: string | null
-          created_at: string | null
           description: string
-          id: string
-          required_skills: string[]
-          status: string | null
-          timeline: Json
-          title: string
-          updated_at: string | null
+          id: number
+          name: string
+          phase: string
         }
         Insert: {
-          budget_range: Json
-          client_id?: string | null
-          created_at?: string | null
           description: string
-          id?: string
-          required_skills: string[]
-          status?: string | null
-          timeline: Json
-          title: string
-          updated_at?: string | null
+          id: number
+          name: string
+          phase: string
         }
         Update: {
-          budget_range?: Json
-          client_id?: string | null
-          created_at?: string | null
           description?: string
-          id?: string
-          required_skills?: string[]
-          status?: string | null
-          timeline?: Json
-          title?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "projects_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      skills: {
-        Row: {
-          category: string
-          created_at: string | null
-          description: string | null
-          id: string
-          name: string
-          verification_requirements: Json | null
-        }
-        Insert: {
-          category: string
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          name: string
-          verification_requirements?: Json | null
-        }
-        Update: {
-          category?: string
-          created_at?: string | null
-          description?: string | null
-          id?: string
+          id?: number
           name?: string
-          verification_requirements?: Json | null
+          phase?: string
         }
         Relationships: []
       }
@@ -364,79 +79,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      dmetaphone: {
-        Args: {
-          "": string
-        }
-        Returns: string
-      }
-      dmetaphone_alt: {
-        Args: {
-          "": string
-        }
-        Returns: string
-      }
-      gtrgm_compress: {
-        Args: {
-          "": unknown
-        }
-        Returns: unknown
-      }
-      gtrgm_decompress: {
-        Args: {
-          "": unknown
-        }
-        Returns: unknown
-      }
-      gtrgm_in: {
-        Args: {
-          "": unknown
-        }
-        Returns: unknown
-      }
-      gtrgm_options: {
-        Args: {
-          "": unknown
-        }
-        Returns: undefined
-      }
-      gtrgm_out: {
-        Args: {
-          "": unknown
-        }
-        Returns: unknown
-      }
-      set_limit: {
-        Args: {
-          "": number
-        }
-        Returns: number
-      }
-      show_limit: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      show_trgm: {
-        Args: {
-          "": string
-        }
-        Returns: string[]
-      }
-      soundex: {
-        Args: {
-          "": string
-        }
-        Returns: string
-      }
-      text_soundex: {
-        Args: {
-          "": string
-        }
-        Returns: string
-      }
+      [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      question_type:
+        | "coding_challenge"
+        | "ai_ml_task"
+        | "choice"
+        | "behavioral_metric"
+        | "ethical_choice"
+        | "hybrid"
     }
     CompositeTypes: {
       [_ in never]: never
