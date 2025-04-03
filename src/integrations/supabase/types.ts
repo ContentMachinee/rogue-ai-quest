@@ -9,68 +9,332 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      scenario_questions: {
+      assessments: {
         Row: {
-          code_template: string | null
-          created_at: string
-          expected_output: string | null
+          assessment_data: Json
+          created_at: string | null
           id: string
-          metrics: Json | null
-          options: Json | null
-          question_text: string
-          question_type: Database["public"]["Enums"]["question_type"]
-          scenario_id: number
+          profile_id: string | null
+          score: number
+          skill_id: string | null
+          verified_by: string | null
         }
         Insert: {
-          code_template?: string | null
-          created_at?: string
-          expected_output?: string | null
+          assessment_data: Json
+          created_at?: string | null
           id?: string
-          metrics?: Json | null
-          options?: Json | null
-          question_text: string
-          question_type: Database["public"]["Enums"]["question_type"]
-          scenario_id: number
+          profile_id?: string | null
+          score: number
+          skill_id?: string | null
+          verified_by?: string | null
         }
         Update: {
-          code_template?: string | null
-          created_at?: string
-          expected_output?: string | null
+          assessment_data?: Json
+          created_at?: string | null
           id?: string
-          metrics?: Json | null
-          options?: Json | null
-          question_text?: string
-          question_type?: Database["public"]["Enums"]["question_type"]
-          scenario_id?: number
+          profile_id?: string | null
+          score?: number
+          skill_id?: string | null
+          verified_by?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "fk_scenario_id"
-            columns: ["scenario_id"]
+            foreignKeyName: "assessments_profile_id_fkey"
+            columns: ["profile_id"]
             isOneToOne: false
-            referencedRelation: "scenarios"
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessments_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessments_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
       }
-      scenarios: {
+      contracts: {
         Row: {
-          description: string
-          id: number
-          name: string
-          phase: string
+          client_id: string | null
+          created_at: string | null
+          id: string
+          milestones: Json
+          project_id: string | null
+          status: string | null
+          talent_id: string | null
+          terms: Json
+          updated_at: string | null
         }
         Insert: {
-          description: string
-          id: number
-          name: string
-          phase: string
+          client_id?: string | null
+          created_at?: string | null
+          id?: string
+          milestones: Json
+          project_id?: string | null
+          status?: string | null
+          talent_id?: string | null
+          terms: Json
+          updated_at?: string | null
         }
         Update: {
+          client_id?: string | null
+          created_at?: string | null
+          id?: string
+          milestones?: Json
+          project_id?: string | null
+          status?: string | null
+          talent_id?: string | null
+          terms?: Json
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contracts_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contracts_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contracts_talent_id_fkey"
+            columns: ["talent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          project_id: string | null
+          receiver_id: string | null
+          sender_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          project_id?: string | null
+          receiver_id?: string | null
+          sender_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          project_id?: string | null
+          receiver_id?: string | null
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profile_skills: {
+        Row: {
+          created_at: string | null
+          is_verified: boolean | null
+          proficiency_level: number
+          profile_id: string
+          skill_id: string
+          verification_proof: Json | null
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          is_verified?: boolean | null
+          proficiency_level: number
+          profile_id: string
+          skill_id: string
+          verification_proof?: Json | null
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          is_verified?: boolean | null
+          proficiency_level?: number
+          profile_id?: string
+          skill_id?: string
+          verification_proof?: Json | null
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_skills_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_skills_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          availability_status: string | null
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          full_name: string
+          headline: string | null
+          hourly_rate: number | null
+          id: string
+          reputation_score: number | null
+          success_rate: number | null
+          total_projects: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          availability_status?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          full_name: string
+          headline?: string | null
+          hourly_rate?: number | null
+          id?: string
+          reputation_score?: number | null
+          success_rate?: number | null
+          total_projects?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          availability_status?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          full_name?: string
+          headline?: string | null
+          hourly_rate?: number | null
+          id?: string
+          reputation_score?: number | null
+          success_rate?: number | null
+          total_projects?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          budget_range: Json
+          client_id: string | null
+          created_at: string | null
+          description: string
+          id: string
+          required_skills: string[]
+          status: string | null
+          timeline: Json
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          budget_range: Json
+          client_id?: string | null
+          created_at?: string | null
+          description: string
+          id?: string
+          required_skills: string[]
+          status?: string | null
+          timeline: Json
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          budget_range?: Json
+          client_id?: string | null
+          created_at?: string | null
           description?: string
-          id?: number
+          id?: string
+          required_skills?: string[]
+          status?: string | null
+          timeline?: Json
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      skills: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          verification_requirements: Json | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          verification_requirements?: Json | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
           name?: string
-          phase?: string
+          verification_requirements?: Json | null
         }
         Relationships: []
       }
@@ -79,16 +343,79 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      dmetaphone: {
+        Args: {
+          "": string
+        }
+        Returns: string
+      }
+      dmetaphone_alt: {
+        Args: {
+          "": string
+        }
+        Returns: string
+      }
+      gtrgm_compress: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      gtrgm_decompress: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      gtrgm_in: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      gtrgm_options: {
+        Args: {
+          "": unknown
+        }
+        Returns: undefined
+      }
+      gtrgm_out: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      set_limit: {
+        Args: {
+          "": number
+        }
+        Returns: number
+      }
+      show_limit: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      show_trgm: {
+        Args: {
+          "": string
+        }
+        Returns: string[]
+      }
+      soundex: {
+        Args: {
+          "": string
+        }
+        Returns: string
+      }
+      text_soundex: {
+        Args: {
+          "": string
+        }
+        Returns: string
+      }
     }
     Enums: {
-      question_type:
-        | "coding_challenge"
-        | "ai_ml_task"
-        | "choice"
-        | "behavioral_metric"
-        | "ethical_choice"
-        | "hybrid"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
