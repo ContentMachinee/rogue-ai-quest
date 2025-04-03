@@ -13,6 +13,6 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
 
 // Helper function for working with tables that might not be in the generated types
 export function customQuery(table: string) {
-  // Cast to any to avoid TypeScript errors with dynamic table names
-  return supabase.from(table) as any;
+  // Cast the result to any to avoid TypeScript errors with dynamic table names
+  return supabase.from(table as any) as any;
 }

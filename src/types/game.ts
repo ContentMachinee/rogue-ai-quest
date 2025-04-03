@@ -63,7 +63,7 @@ export type UserProfile = UserMetrics;
 export interface ScenarioInfo {
   id: ScenarioId;
   name: string;
-  phase: GamePhase;
+  phase: string;
   description: string;
   completed: boolean;
 }
@@ -89,7 +89,7 @@ export interface GameData {
   currentPhase: GamePhase;
   currentScenario: ScenarioId;
   progress: number;
-  choices: GameChoice[];
+  choices: Record<string, string>;
   scenarios: ScenarioInfo[];
   metrics: UserMetrics;
   score: GameScore;

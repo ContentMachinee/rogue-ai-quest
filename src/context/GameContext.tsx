@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { 
   GamePhase, 
@@ -5,7 +6,9 @@ import {
   GameChoice, 
   GameScore, 
   UserMetrics,
-  ScenarioInfo
+  ScenarioInfo,
+  DbScenario,
+  GameData
 } from '@/types/game';
 import { fetchAllScenarios } from '@/services/scenarioService';
 
@@ -15,15 +18,13 @@ interface GameContextType {
   setGamePhase: (phase: GamePhase) => void;
   progress: number;
   updateProgress: (value: number) => void;
-  gameData: {
-    scenarios: ScenarioInfo[];
-    choices: Record<string, string>;
-    metrics: UserMetrics;
-    score: GameScore;
-  };
+  gameData: GameData;
   recordChoice: (questionId: string, choiceId: string, timeMs: number) => void;
   completeScenario: (scenarioId: ScenarioId) => void;
   isLoading: boolean;
+  setScenario?: (scenarioId: ScenarioId) => void;
+  resetGame?: () => void;
+  fetchingScenarios?: boolean;
 }
 
 // Create the context with a default value
@@ -38,34 +39,58 @@ export const useGame = () => {
   return context;
 };
 
-// This part needs to be modified to fix the TypeScript errors
-// In the completeScenario and loadScenariosFromDatabase functions
-
-// Here's the implementation with type fixes
+// Implementation of the game provider
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [gamePhase, setGamePhase] = useState<GamePhase>('intro');
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [gameData, setGameData] = useState<GameContextType['gameData']>({
+  const [fetchingScenarios, setFetchingScenarios] = useState(false);
+  const [gameData, setGameData] = useState<GameData>({
+    currentPhase: 'intro' as GamePhase,
+    currentScenario: 1 as ScenarioId,
+    progress: 0,
     scenarios: [],
     choices: {},
     metrics: {
-      technical: 0,
+      codingProficiency: 0,
+      algorithmicThinking: 0,
+      debugging: 0,
+      optimization: 0,
+      aiMlKnowledge: 0,
+      dataProcessing: 0,
+      security: 0,
+      problemSolving: 0,
       analytical: 0,
-      ethical: 0,
       creative: 0,
-      empathetic: 0,
+      adaptability: 0,
+      learning: 0,
+      attentionToDetail: 0,
+      integrity: 0,
+      empathy: 0,
+      trustworthiness: 0,
+      determination: 0,
+      accountability: 0,
+      resilience: 0,
+      decisiveness: 0,
+      openness: 0,
+      conscientiousness: 0,
+      extraversion: 0,
+      agreeableness: 0,
+      neuroticism: 0,
+      technicalSkill: 0,
+      convergentThinking: 0,
+      divergentThinking: 0,
+      creativity: 0,
+      ethics: 0,
+      riskTaking: 0,
+      communication: 0
     },
     score: {
-      total: 0,
-      breakdown: {
-        technical: 0,
-        analytical: 0,
-        ethical: 0,
-        creative: 0,
-        empathetic: 0,
-      }
-    }
+      points: 0,
+      badges: [],
+      timeBonus: 0
+    },
+    startTime: new Date()
   });
 
   // Load scenarios from database on mount
@@ -75,6 +100,63 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const updateProgress = (value: number) => {
     setProgress(value);
+    setGameData(prev => ({ ...prev, progress: value }));
+  };
+
+  const setScenario = (scenarioId: ScenarioId) => {
+    setGameData(prev => ({ ...prev, currentScenario: scenarioId }));
+  };
+
+  const resetGame = () => {
+    setGamePhase('intro');
+    setProgress(0);
+    setGameData({
+      currentPhase: 'intro' as GamePhase,
+      currentScenario: 1 as ScenarioId,
+      progress: 0,
+      scenarios: gameData.scenarios,
+      choices: {},
+      metrics: {
+        codingProficiency: 0,
+        algorithmicThinking: 0,
+        debugging: 0,
+        optimization: 0,
+        aiMlKnowledge: 0,
+        dataProcessing: 0,
+        security: 0,
+        problemSolving: 0,
+        analytical: 0,
+        creative: 0,
+        adaptability: 0,
+        learning: 0,
+        attentionToDetail: 0,
+        integrity: 0,
+        empathy: 0,
+        trustworthiness: 0,
+        determination: 0,
+        accountability: 0,
+        resilience: 0,
+        decisiveness: 0,
+        openness: 0,
+        conscientiousness: 0,
+        extraversion: 0,
+        agreeableness: 0,
+        neuroticism: 0,
+        technicalSkill: 0,
+        convergentThinking: 0,
+        divergentThinking: 0,
+        creativity: 0,
+        ethics: 0,
+        riskTaking: 0,
+        communication: 0
+      },
+      score: {
+        points: 0,
+        badges: [],
+        timeBonus: 0
+      },
+      startTime: new Date()
+    });
   };
 
   const recordChoice = (questionId: string, choiceId: string, timeMs: number) => {
@@ -96,12 +178,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const completeScenario = (scenarioId: ScenarioId) => {
     setGameData((prev) => {
-      const updatedScenarios = prev.scenarios.map((s: any) => {
+      const updatedScenarios = prev.scenarios.map((s) => {
         if (s.id === scenarioId) {
           return { ...s, completed: true };
         }
         return s;
-      }) as ScenarioInfo[];
+      });
       
       return {
         ...prev,
@@ -111,6 +193,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const loadScenariosFromDatabase = async () => {
+    setFetchingScenarios(true);
     try {
       const dbScenarios = await fetchAllScenarios();
       
@@ -118,8 +201,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Convert DbScenario[] to ScenarioInfo[]
         const scenariosWithCompleted = dbScenarios.map(s => ({
           ...s,
+          id: s.id as ScenarioId, // Ensure the id is treated as ScenarioId
           completed: false
-        })) as ScenarioInfo[];
+        }));
         
         setGameData(prev => ({
           ...prev,
@@ -128,6 +212,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     } catch (error) {
       console.error('Failed to fetch scenarios from Supabase:', error);
+    } finally {
+      setFetchingScenarios(false);
     }
   };
 
@@ -140,7 +226,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     gameData,
     recordChoice,
     completeScenario,
-    isLoading
+    isLoading,
+    setScenario,
+    resetGame,
+    fetchingScenarios
   };
 
   return (
