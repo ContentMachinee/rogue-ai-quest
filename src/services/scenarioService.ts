@@ -1,152 +1,122 @@
 
-import { supabase } from "@/integrations/supabase/client";
-import { DbScenario, DbScenarioQuestion, ScenarioInfo, ScenarioId, GameChoice, DecisionType, QuestionType } from "@/types/game";
+import { customQuery } from '@/integrations/supabase/client';
+import { DbScenario, DbScenarioQuestion } from '@/types/game';
 
 /**
- * Fetches all scenarios from the database
+ * Fetches all scenarios
  */
-export const fetchAllScenarios = async (): Promise<ScenarioInfo[]> => {
-  const { data, error } = await supabase
-    .from('scenarios')
-    .select('*')
-    .order('id');
-  
-  if (error) {
-    console.error('Error fetching scenarios:', error);
-    throw new Error('Failed to fetch scenarios');
-  }
-  
-  // Convert DbScenario to ScenarioInfo
-  return (data as DbScenario[]).map(scenario => ({
-    id: scenario.id as ScenarioId,
-    name: scenario.name,
-    phase: scenario.phase as any, // Convert string to GamePhase
-    description: scenario.description,
-    completed: false // Default to false, will be updated from local state
-  }));
-};
-
-/**
- * Maps database question types to frontend decision types
- */
-const mapQuestionTypeToDecisionType = (questionType: QuestionType): DecisionType => {
-  const typeMap: Record<QuestionType, DecisionType> = {
-    'coding_challenge': 'technical',
-    'ai_ml_task': 'technical',
-    'choice': 'analytical',
-    'behavioral_metric': 'analytical',
-    'ethical_choice': 'ethical',
-    'hybrid': 'technical'
-  };
-  
-  return typeMap[questionType] || 'technical';
-};
-
-/**
- * Formats options from the database into the GameChoice format
- */
-const formatOptions = (options: any): { id: string; text: string; traits: Record<string, any> }[] => {
-  // If options is null, return default options
-  if (!options) {
-    return [
-      { id: 'default_opt_1', text: 'Continue', traits: {} },
-      { id: 'default_opt_2', text: 'Skip', traits: {} }
-    ];
-  }
-  
-  // If options is an array, format each item
-  if (Array.isArray(options)) {
-    return options.map((opt: any, index: number) => ({
-      id: opt.id || `option_${index}`,
-      text: opt.text || String(opt),
-      traits: opt.traits || {}
-    }));
-  }
-  
-  // If options is an object but not an array, convert it
-  return Object.entries(options).map(([key, value]) => ({
-    id: key,
-    text: typeof value === 'string' ? value : String(value),
-    traits: {}
-  }));
-};
-
-/**
- * Fetches questions for a specific scenario and formats them as GameChoice objects
- */
-export const fetchScenarioQuestions = async (scenarioId: number): Promise<GameChoice[]> => {
-  const { data, error } = await supabase
-    .from('scenario_questions')
-    .select('*')
-    .eq('scenario_id', scenarioId)
-    .order('question_type');
-  
-  if (error) {
-    console.error(`Error fetching questions for scenario ${scenarioId}:`, error);
-    throw new Error('Failed to fetch scenario questions');
-  }
-  
-  if (!data || data.length === 0) {
-    console.warn(`No questions found for scenario ${scenarioId}, returning empty array`);
+export async function fetchAllScenarios() {
+  try {
+    const { data, error } = await customQuery('scenarios').select('*');
+    
+    if (error) {
+      throw error;
+    }
+    
+    // Type assertion for working with dynamic tables
+    return (data as any[]) as DbScenario[];
+  } catch (error) {
+    console.error("Error fetching scenarios:", error);
     return [];
   }
-  
-  // Map the database questions to the GameChoice format
-  const questions: GameChoice[] = (data as DbScenarioQuestion[]).map(question => {
-    return {
-      id: question.id,
-      type: mapQuestionTypeToDecisionType(question.question_type),
-      question: question.question_text,
-      scenario: question.scenario_id,
-      phase: 'infiltration', // Default phase, could be determined by scenario
-      options: formatOptions(question.options),
-      codeTemplate: question.code_template,
-      expectedOutput: question.expected_output
-    };
-  });
-  
-  return questions;
-};
+}
 
 /**
- * Fetches a single scenario by ID
+ * Fetches scenarios by phase
  */
-export const fetchScenarioById = async (scenarioId: number): Promise<DbScenario> => {
-  const { data, error } = await supabase
-    .from('scenarios')
-    .select('*')
-    .eq('id', scenarioId)
-    .single();
-  
-  if (error) {
-    console.error(`Error fetching scenario ${scenarioId}:`, error);
-    throw new Error(`Failed to fetch scenario ${scenarioId}`);
+export async function fetchScenariosByPhase(phase: string) {
+  try {
+    const { data, error } = await customQuery('scenarios')
+      .select('*')
+      .eq('phase', phase);
+    
+    if (error) {
+      throw error;
+    }
+    
+    return (data as any[]) as DbScenario[];
+  } catch (error) {
+    console.error(`Error fetching scenarios for phase ${phase}:`, error);
+    return [];
   }
-  
-  return data as DbScenario;
-};
+}
 
 /**
- * Inserts a batch of questions for a scenario
+ * Fetches questions for a scenario
  */
-export const insertScenarioQuestions = async (questions: Omit<DbScenarioQuestion, 'created_at' | 'id'>[]): Promise<void> => {
-  const { error } = await supabase
-    .from('scenario_questions')
-    .insert(questions);
-  
-  if (error) {
-    console.error('Error inserting scenario questions:', error);
-    throw new Error('Failed to insert scenario questions');
+export async function fetchQuestionsForScenario(scenarioId: string) {
+  try {
+    const { data, error } = await customQuery('scenario_questions')
+      .select('*')
+      .eq('scenario_id', scenarioId)
+      .order('order', { ascending: true });
+    
+    if (error) {
+      throw error;
+    }
+    
+    return (data as any[]) as DbScenarioQuestion[];
+  } catch (error) {
+    console.error(`Error fetching questions for scenario ${scenarioId}:`, error);
+    return [];
   }
-};
+}
 
 /**
- * Updates the GameChoice type to include optional code-related fields
- * This function is used to check if a question has code challenge elements
+ * Fetches a scenario by ID
  */
-export const hasCodeChallenge = (question: GameChoice): boolean => {
-  return (
-    question.type === 'technical' && 
-    (!!question.codeTemplate || !!question.expectedOutput)
-  );
-};
+export async function fetchScenarioById(id: string) {
+  try {
+    const { data, error } = await customQuery('scenarios')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      throw error;
+    }
+    
+    return (data as any) as DbScenario;
+  } catch (error) {
+    console.error(`Error fetching scenario ${id}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Creates a new scenario with questions
+ */
+export async function createScenario(scenario: Omit<DbScenario, 'id' | 'created_at'>, questions: Omit<DbScenarioQuestion, 'id' | 'created_at'>[]) {
+  try {
+    // Insert scenario
+    const { data: scenarioData, error: scenarioError } = await customQuery('scenarios')
+      .insert([scenario])
+      .select()
+      .single();
+    
+    if (scenarioError) {
+      throw scenarioError;
+    }
+    
+    const scenarioId = (scenarioData as any).id;
+    
+    // Add scenario_id to each question
+    const questionsWithScenarioId = questions.map(question => ({
+      ...question,
+      scenario_id: scenarioId
+    }));
+    
+    // Insert questions
+    const { error: questionsError } = await customQuery('scenario_questions')
+      .insert(questionsWithScenarioId);
+    
+    if (questionsError) {
+      throw questionsError;
+    }
+    
+    return { success: true, scenarioId };
+  } catch (error) {
+    console.error("Error creating scenario:", error);
+    return { success: false, error };
+  }
+}

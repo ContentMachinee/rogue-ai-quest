@@ -6,16 +6,31 @@ import { toast } from 'sonner';
 import { BrainCircuitIcon, ShieldIcon, RocketIcon } from 'lucide-react';
 import { typography } from '@/lib/typography';
 import { cn } from '@/lib/utils';
+import EmailCaptureModal from '@/components/ui/EmailCaptureModal';
 
 const Index = () => {
   const [loading, setLoading] = useState(false);
   const [fadeIn, setFadeIn] = useState(false);
+  const [showEmailModal, setShowEmailModal] = useState(false);
   const navigate = useNavigate();
   
   useEffect(() => {
     // Fade in content on mount
     const timer = setTimeout(() => setFadeIn(true), 100);
-    return () => clearTimeout(timer);
+    
+    // Show email capture modal after a short delay
+    const emailTimer = setTimeout(() => {
+      // Check if user has already seen the modal
+      const hasSeenModal = localStorage.getItem('neural_interface_registered');
+      if (!hasSeenModal) {
+        setShowEmailModal(true);
+      }
+    }, 1500);
+    
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(emailTimer);
+    };
   }, []);
 
   const startGame = () => {
@@ -27,6 +42,13 @@ const Index = () => {
       // Navigate to the game
       navigate("/game");
     }, 1500);
+  };
+  
+  const handleEmailRegistrationComplete = () => {
+    // Mark that user has registered
+    localStorage.setItem('neural_interface_registered', 'true');
+    // Show success notification
+    toast.success("Neural Interface Active. Welcome to Nebula City.");
   };
 
   return (
@@ -109,6 +131,13 @@ const Index = () => {
           </p>
         </div>
       </div>
+      
+      {/* Email capture modal */}
+      <EmailCaptureModal 
+        open={showEmailModal}
+        onOpenChange={setShowEmailModal}
+        onComplete={handleEmailRegistrationComplete}
+      />
     </div>
   );
 };
