@@ -13,5 +13,5 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
 
 // Helper function for working with tables that might not be in the generated types
 export function customQuery<T = any>(table: string) {
-  return supabase.from(table) as any;
+  return supabase.from(table) as unknown as ReturnType<typeof supabase.from<T>>;
 }

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -16,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { CircleXIcon, LoaderIcon, UserCircle2Icon, MailIcon, ShieldIcon } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { subscribeEmail } from "@/services/authService";
 import { cn } from "@/lib/utils";
 import { typography } from "@/lib/typography";
 
@@ -57,15 +56,10 @@ const EmailCaptureModal = ({ open, onOpenChange, onComplete }: EmailCaptureModal
       setIsSubmitting(true);
       setCodeScanEffect(true);
       
-      // Insert data into email_subscriptions table
-      const { error } = await supabase
-        .from('email_subscriptions')
-        .insert([{ 
-          name: data.name,
-          email: data.email 
-        }]);
+      // Use the authService to subscribe email
+      const result = await subscribeEmail(data.email, data.name);
 
-      if (error) throw error;
+      if (!result.success) throw new Error(result.error);
       
       // Simulate processing for visual effect
       await new Promise(resolve => setTimeout(resolve, 1500));
@@ -84,7 +78,7 @@ const EmailCaptureModal = ({ open, onOpenChange, onComplete }: EmailCaptureModal
       console.error("Subscription error:", error);
       
       // Check for duplicate email error
-      if (error.code === "23505") {
+      if (error.isDuplicate) {
         toast.error("Neural signature already exists in database.");
       } else {
         toast.error("Registration failed. System error detected.");

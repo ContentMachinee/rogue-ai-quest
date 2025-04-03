@@ -1,6 +1,6 @@
 
 import { customQuery } from '@/integrations/supabase/client';
-import { DbScenario, DbScenarioQuestion } from '@/types/game';
+import { DbScenario, DbScenarioQuestion, GameChoice } from '@/types/game';
 
 /**
  * Fetches all scenarios
@@ -42,9 +42,9 @@ export async function fetchScenariosByPhase(phase: string) {
 }
 
 /**
- * Fetches questions for a scenario
+ * Fetches questions for a scenario and transforms them to GameChoice format
  */
-export async function fetchQuestionsForScenario(scenarioId: string) {
+export async function fetchScenarioQuestions(scenarioId: string | number) {
   try {
     const { data, error } = await customQuery('scenario_questions')
       .select('*')
@@ -55,7 +55,21 @@ export async function fetchQuestionsForScenario(scenarioId: string) {
       throw error;
     }
     
-    return (data as any[]) as DbScenarioQuestion[];
+    // Transform database questions to GameChoice format
+    const questions = (data as any[] || []).map(q => {
+      return {
+        id: q.id,
+        type: q.question_type,
+        question: q.question_text,
+        scenario: q.scenario_id,
+        phase: 'infiltration', // Default phase
+        options: q.options || [],
+        codeTemplate: q.code_template,
+        expectedOutput: q.expected_output,
+      } as GameChoice;
+    });
+    
+    return questions;
   } catch (error) {
     console.error(`Error fetching questions for scenario ${scenarioId}:`, error);
     return [];
@@ -119,4 +133,11 @@ export async function createScenario(scenario: Omit<DbScenario, 'id' | 'created_
     console.error("Error creating scenario:", error);
     return { success: false, error };
   }
+}
+
+/**
+ * Utility function to check if a GameChoice has a code challenge
+ */
+export function hasCodeChallenge(challenge: GameChoice): boolean {
+  return !!challenge.codeTemplate || challenge.type === 'technical';
 }

@@ -6,7 +6,7 @@ import { supabase, customQuery } from '@/integrations/supabase/client';
  */
 export async function subscribeEmail(email: string, name: string) {
   try {
-    const { data, error } = await customQuery<{id: string; name: string; email: string}>('email_subscriptions')
+    const { data, error } = await customQuery('email_subscriptions')
       .insert([{ name, email }])
       .select();
       
