@@ -119,6 +119,27 @@ export type Database = {
           },
         ]
       }
+      email_subscriptions: {
+        Row: {
+          email: string
+          id: string
+          name: string
+          subscribed_at: string | null
+        }
+        Insert: {
+          email: string
+          id?: string
+          name: string
+          subscribed_at?: string | null
+        }
+        Update: {
+          email?: string
+          id?: string
+          name?: string
+          subscribed_at?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
