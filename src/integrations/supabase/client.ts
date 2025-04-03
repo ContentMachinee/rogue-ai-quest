@@ -12,6 +12,7 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 // Helper function for working with tables that might not be in the generated types
-export function customQuery<T = any>(table: string) {
-  return supabase.from(table) as unknown as ReturnType<typeof supabase.from<T>>;
+export function customQuery(table: string) {
+  // Cast to any to avoid TypeScript errors with dynamic table names
+  return supabase.from(table) as any;
 }

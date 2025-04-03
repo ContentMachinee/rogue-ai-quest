@@ -1,5 +1,5 @@
 
-import { supabase, customQuery } from '@/integrations/supabase/client';
+import { customQuery } from '@/integrations/supabase/client';
 
 /**
  * Subscribe user email to newsletter
